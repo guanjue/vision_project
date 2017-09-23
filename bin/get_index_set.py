@@ -47,7 +47,7 @@ for levels in signal_level_range:
 
 ### sort rows based on index pattern
 for i in range(0,16)[::-1]:
-	prime_mark_info_sorted = prime_mark_info_sorted[-prime_mark_info_sorted[:,i].argsort(kind='mergesort'),:]
+	prime_mark_info_sorted = prime_mark_info_sorted[prime_mark_info_sorted[:,i].argsort(kind='mergesort'),:]
 
 write2d_array(prime_mark_info_sorted, 'celltype.binary_pattern.sorted.txt')
 
