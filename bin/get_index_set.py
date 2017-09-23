@@ -23,51 +23,86 @@ def write2d_array(array,output):
 	r1.close()
 
 
-### read given cell type order
-colmun_oder = read2d_array('celltype.order.txt',str)
-order = np.array(np.transpose(colmun_oder[:,0]),dtype=int)
-header = np.transpose(colmun_oder[:,1])
-print('cell type order:')
-print(header)
+def get_index_set(inputmatrix, given_column_order, given_signalrange, sorted_index_output, sorted_index_set_output):
+	### read given cell type order
+	column_oder = read2d_array('celltype.order.txt',str)
+	order = np.array(np.transpose(column_oder[:,0]),dtype=int)
+	header = np.array([column_oder[:,1]])
+	print('cell type order:')
+	print(header)
 
-### read given sorting signal level
-signal_level_range = read2d_array('signal_level_range.txt',float)
-print('signal level range:')
-print(signal_level_range)
+	### read given sorting signal level
+	signal_level_range = read2d_array('signal_level_range.txt',float)
+	print('signal level range:')
+	print(signal_level_range)
 
-### read primary matrix
-prime_mark0 = read2d_array('celltype.binary_pattern.txt',str)
-prime_mark_id = prime_mark0[:,0]
-### sort cell types by given cell type order
-prime_mark_info_sorted = np.array(prime_mark0[1:,order], dtype = float)
+	### read primary matrix
+	prime_mark0 = read2d_array('celltype.binary_pattern.txt',str)
+	prime_mark_id = np.transpose([prime_mark0[1:,0]])
+	### sort cell types by given cell type order
+	prime_mark_info_sorted = np.array(prime_mark0[1:,order], dtype = float)
 
-### change signal to user defined signal levels
-for levels in signal_level_range:
-	prime_mark_info_sorted[((prime_mark_info_sorted>=levels[1]) * (prime_mark_info_sorted<levels[2]))] = levels[0]
+	### change signal to user defined signal levels
+	for levels in signal_level_range:
+		prime_mark_info_sorted[((prime_mark_info_sorted>=levels[1]) * (prime_mark_info_sorted<levels[2]))] = levels[0]
 
-### sort rows based on index pattern
-for i in range(0,16)[::-1]:
-	prime_mark_info_sorted = prime_mark_info_sorted[prime_mark_info_sorted[:,i].argsort(kind='mergesort'),:]
 
-write2d_array(prime_mark_info_sorted, 'celltype.binary_pattern.sorted.txt')
+	print(prime_mark_id.shape)
+	### sort rows based on index pattern
+	for i in range(0,16)[::-1]:
+		row_order = prime_mark_info_sorted[:,i].argsort(kind='mergesort')
+		prime_mark_info_sorted = prime_mark_info_sorted[row_order,:]
+		prime_mark_id = prime_mark_id[row_order,:]
+	prime_mark_id_sorted = np.concatenate((np.array([['DNA_region_id']]), prime_mark_id),axis = 0)
+	print(header.shape)
+	print(prime_mark_info_sorted.shape)
+	print(prime_mark_id.shape)
+	### add header
+	prime_mark_info_sorted_info = np.concatenate((header, prime_mark_info_sorted), axis = 0)
+	### add row names
+	prime_mark_info_sorted_matrix = np.concatenate((prime_mark_id_sorted, prime_mark_info_sorted_info), axis = 1)
+	### write the all DNA region binary pattern
+	write2d_array(prime_mark_info_sorted_matrix, 'celltype.binary_pattern.sorted.txt')
 
-index_set_dict = {}
-index_set = []
-for index in prime_mark_info_sorted:
-	if not (index in index_set_dict):
-		index_set_dict[index] = 1
-		index_set.append(index)
-	else:
-		index_set_dict[index] = index_set_dict[index]+1
+	prime_mark_info_sorted_matrix_reliable = [prime_mark_info_sorted_matrix[0]]
+	for i in range(1, prime_mark_info_sorted_matrix.shape[0]):
+		pattern = np.array(prime_mark_info_sorted_matrix[i,1:], dtype = float)
+		info = np.sum(pattern)
+		if info > 0:
+			prime_mark_info_sorted_matrix_reliable.append(prime_mark_info_sorted_matrix[i,:])
 
-result = open('celltype.index_set.sorted.txt','w')
+	write2d_array(prime_mark_info_sorted_matrix_reliable, 'celltype.binary_pattern.sorted.filtered.txt')
 
-for pattern in index_set:
-	pattern_num = index_set_dict[pattern]
-	for i in range(0, len(pattern)-1):
-		result.write(pattern[i] * pattern_num)
 
-result.close()
+	index_set_dict = {}
+	index_set = []
+	for index in prime_mark_info_sorted:
+		index_merge = ''
+		for i in index:
+			index_merge = index_merge+'_'+str(i)
+		if not (index_merge in index_set_dict):
+			index_set_dict[index_merge] = 1
+			index_set.append(index_merge)
+		else:
+			index_set_dict[index_merge] = index_set_dict[index_merge]+1
+
+
+	result = open('celltype.index_set.sorted.txt','w')
+	result.write('index'+'\t')
+	for i in range(0,header.shape[1]-1):
+		result.write(header[0,i]+'\t')
+	result.write(str(header[0,header.shape[1]-1])+'\n')
+
+	for pattern in index_set:
+		pattern_num = index_set_dict[pattern]
+		binary_label = pattern.split('_')
+		if pattern_num >= 200:
+			result.write(pattern[1:]+'\t')
+			for i in range(1, len(binary_label)-1):
+				result.write(str(float(binary_label[i]) * pattern_num)+'\t')
+			result.write(str(float(binary_label[len(binary_label)-1]) * pattern_num)+'\n')
+	result.close()
+
 
 ############################################################################
 #time python split_signal_binary_matrix.py -i homerTable3.peaks.filtered.txt -a homerTable3.peaks.filtered.interval.txt -x 4 -b homerTable3.peaks.filtered.signal.txt -y 32 -c homerTable3.peaks.filtered.binary_pattern.txt -z 60
