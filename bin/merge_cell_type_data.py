@@ -40,12 +40,12 @@ def merge_cell_type_data(inputfile, outputfile):
 	meg_header = [header[15].split('_')[0]]
 	mono_header = [header[17].split('_')[0]]
 	neu_header = [header[19].split('_')[0]]
-	b_header = [header[21].split('_')[0]]
-	nk_header = [header[22].split('_')[0]]
-	tcd4_header = [header[23].split('_')[0]]
-	tcd8_header = [header[24].split('_')[0]]
-	g1e_header = [header[25].split('_')[0]]
-	er4_header = [header[27].split('_')[0]]
+	b_header = [header[20].split('_')[0]]
+	nk_header = [header[21].split('_')[0]]
+	tcd4_header = [header[22].split('_')[0]]
+	tcd8_header = [header[23].split('_')[0]]
+	g1e_header = [header[24].split('_')[0]]
+	er4_header = [header[26].split('_')[0]]
 
 	cellytpe_merge_matrix_header = np.array( ([lsk_header + cmp_header + gmp_header + mep_header + cfue_header + ery_header + cfumk_header + meg_header + mono_header + neu_header + b_header + nk_header + tcd4_header + tcd8_header + g1e_header + er4_header]) )
 	
