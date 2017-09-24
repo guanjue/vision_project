@@ -9,4 +9,6 @@ time python $script_folder'merge_cell_type_data.py' -i homerTable3.peaks.filtere
 time python $script_folder'merge_cell_type_data.py' -i homerTable3.peaks.filtered.signal.txt -o celltype.signal.txt
 
 ### get index sets
-time python $script_folder'get_index_set.py' 
+time python $script_folder'get_index_set.py' -i celltype.binary_pattern.txt -r celltype.order.txt -l signal_level_range.txt -f celltype.binary_pattern.sorted.txt -s celltype.index_set.sorted.txt
+
+

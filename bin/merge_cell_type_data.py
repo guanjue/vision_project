@@ -89,12 +89,12 @@ def main(argv):
 	try:
 		opts, args = getopt.getopt(argv,"hi:o:")
 	except getopt.GetoptError:
-		print 'time python merge_cell_type_data.py -i inputfile a output1 -o outputfile'
+		print 'time python merge_cell_type_data.py -i inputfile -a output1 -o outputfile'
 		sys.exit(2)
 
 	for opt,arg in opts:
 		if opt=="-h":
-			print 'time python merge_cell_type_data.py -i inputfile a output1 -o outputfile'
+			print 'time python merge_cell_type_data.py -i inputfile -a output1 -o outputfile'
 			sys.exit()
 		elif opt=="-i":
 			inputfile=str(arg.strip())
