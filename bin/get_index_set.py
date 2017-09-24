@@ -58,7 +58,7 @@ def get_index_set(inputmatrix, given_column_order, given_signal_level, sorted_in
 		prime_mark_id = prime_mark_id[row_order,:]
 
 	### add header
-	prime_mark_id_sorted = np.concatenate((np.array([['name']]), prime_mark_id),axis = 0)
+	prime_mark_id_sorted = np.concatenate((np.array([['ID']]), prime_mark_id),axis = 0)
 	prime_mark_info_sorted_info = np.concatenate((header, prime_mark_info_sorted), axis = 0)
 
 	### add row names
@@ -97,7 +97,7 @@ def get_index_set(inputmatrix, given_column_order, given_signal_level, sorted_in
 	def write_index_set(output_name, index_set_dict, index_set_array, header):
 		result = open(output_name,'w')
 		### write header
-		result.write('index'+'\t')
+		result.write('YORF'+'\t')
 		for i in range(0,header.shape[1]-1):
 			result.write(header[0,i]+'\t')
 		result.write(str(header[0,header.shape[1]-1])+'\n')
