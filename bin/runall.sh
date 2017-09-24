@@ -1,49 +1,72 @@
 ##################################
 script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 ##################################
+	###### initiate folders
+	input_folder='input_data/'
+	### mkdir index_set module folder
+	index_set_dir='index_set_matrix/'
+	if [ -d "$index_set_dir" ]; then  
+    	rm -r $index_set_dir
+	fi
+	mkdir $index_set_dir
+
+	### mkdir index_set module folder
+	index_set_sig_dir='index_set_sig_matrix/'
+	if [ -d "$index_set_sig_dir" ]; then  
+    	rm -r $index_set_sig_dir
+	fi
+	mkdir $index_set_sig_dir
+
+	### mkdir figure folder
+	index_set_figure_dir='index_set_figure/'
+	if [ -d "$index_set_figure_dir" ]; then  
+    	rm -r $index_set_figure_dir
+	fi
+	mkdir $index_set_figure_dir
+##################################
 	######## index set module
 	### get binary matrix & signal matrix ###
 	echo 'binary matrix and signal matrix'
-	time python $script_folder'index_set/split_signal_binary_matrix.py' -i homerTable3.peaks.filtered.txt -n 4 -a homerTable3.peaks.filtered.interval.txt -x 4 -b homerTable3.peaks.filtered.signal.txt -y 32 -c homerTable3.peaks.filtered.binary_pattern.txt -z 60
+	time python $script_folder'index_set/split_signal_binary_matrix.py' -i $input_folder'homerTable3.peaks.filtered.txt' -n 4 -a $index_set_dir'homerTable3.peaks.filtered.interval.txt' -x 4 -b $index_set_dir'homerTable3.peaks.filtered.signal.txt' -y 32 -c $index_set_dir'homerTable3.peaks.filtered.binary_pattern.txt' -z 60
 
 	### get cell type average matrix
 	echo 'get cell type average matrix'
-	time python $script_folder'index_set/merge_cell_type_data.py' -i homerTable3.peaks.filtered.binary_pattern.txt -o celltype.binary_pattern.txt
-	time python $script_folder'index_set/merge_cell_type_data.py' -i homerTable3.peaks.filtered.signal.txt -o celltype.signal.txt
+	time python $script_folder'index_set/merge_cell_type_data.py' -i $index_set_dir'homerTable3.peaks.filtered.binary_pattern.txt' -o $index_set_dir'celltype.binary_pattern.txt'
+	time python $script_folder'index_set/merge_cell_type_data.py' -i $index_set_dir'homerTable3.peaks.filtered.signal.txt' -o $index_set_dir'celltype.signal.txt'
 
 	### get index sets
 	echo 'get index sets'
-	time python $script_folder'index_set/get_index_set.py' -i celltype.binary_pattern.txt -r celltype.order.txt -l signal_level_range.txt -f celltype.index.sorted.txt -s celltype.index_set.sorted.txt
+	time python $script_folder'index_set/get_index_set.py' -i $index_set_dir'celltype.binary_pattern.txt' -r $input_folder'celltype.order.txt' -l $input_folder'signal_level_range.txt' -f $index_set_dir'celltype.index.sorted.txt' -s $index_set_dir'celltype.index_set.sorted.txt'
 
 	### plot index set
 	echo 'plot index set'
-	time Rscript $script_folder'figures/plot_index_set_region_hist.R' celltype.index_set.sorted.txt
-	time Rscript $script_folder'figures/plot_index_set_module.R' celltype.index_set.sorted.txt celltype.index.sorted.txt black 200 index_set_all.pdf index_set_thresh.pdf index.png black
+	time Rscript $script_folder'figures/plot_index_set_region_hist.R' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_hist.pdf' $index_set_figure_dir'index_hist_noxlim.pdf'
+	time Rscript $script_folder'figures/plot_index_set_module.R' $index_set_dir'celltype.index_set.sorted.txt' $index_set_dir'celltype.index.sorted.txt' black 200 $index_set_figure_dir'index_set_all.pdf' $index_set_figure_dir'index_set_thresh.pdf' $index_set_figure_dir'index.png' black
 
 ##################################
 	######## homer signal
 	### signal matrix sort
 	echo 'signal matrix sort'
-	time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t celltype.signal.txt -a 1 -s celltype.index.sorted.txt -b 1 -r celltype.order.txt -q 75 -o celltype.index.signal.sorted.txt -p celltype.index_set.signal.sorted.txt
+	time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t $index_set_dir'celltype.signal.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -q 75 -o $index_set_sig_dir'celltype.index.signal.sorted.txt' -p $index_set_sig_dir'celltype.index_set.signal.sorted.txt'
 	### filter the original matrix to 210k matrix
 	echo 'filter the original matrix to 210k matrix'
-	time python $script_folder'sort_matrix/vlookup.py' -t homerTable3.peaks.filtered.txt -m 4 -s celltype.index.sorted.txt -n 1 -o homerTable3.peaks.filtered.210k.txt -k F
+	time python $script_folder'sort_matrix/vlookup.py' -t $input_folder'homerTable3.peaks.filtered.txt' -m 4 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $input_folder'homerTable3.peaks.filtered.210k.txt' -k F
 	### plot index set signal
 	echo 'plot index set signal'
-	time Rscript $script_folder'figures/plot_index_set_signal_module.R' celltype.index_set.signal.sorted.txt celltype.index.signal.sorted.txt celltype.index_set.sorted.txt index_set_signal_all.pdf index_set_signal_thresh.pdf index_signal.png red 200 0.01 log2
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.signal.sorted.txt' $index_set_sig_dir'celltype.index.signal.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_signal_all.pdf' $index_set_figure_dir'index_set_signal_thresh.pdf' $index_set_figure_dir'index_signal.png' red 200 0.01 log2
 
 	######## DNA region TPM
 	echo 'get cell type average matrix'
-	time python $script_folder'index_set/merge_cell_type_data.py' -i homerTable3.peaks.filtered.tpm.txt -o celltype.tpm.txt
+	time python $script_folder'index_set/merge_cell_type_data.py' -i homerTable3.peaks.filtered.tpm.txt -o $index_set_dir'celltype.tpm.txt'
 	### tpm matrix sort
 	echo 'tpm matrix sort'
-	time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t celltype.tpm.txt -a 1 -s celltype.index.sorted.txt -b 1 -r celltype.order.txt -q 75 -o celltype.index.tpm.sorted.txt -p celltype.index_set.tpm.sorted.txt
+	time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t $index_set_dir'celltype.tpm.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -q 75 -o $index_set_sig_dir'celltype.index.tpm.sorted.txt' -p $index_set_sig_dir'celltype.index_set.tpm.sorted.txt'
 	### filter the original matrix to 210k matrix
 	echo 'filter the original matrix to 210k matrix'
-	time python $script_folder'sort_matrix/vlookup.py' -t homerTable3.peaks.filtered.tpm.txt -m 1 -s celltype.index.sorted.txt -n 1 -o homerTable3.peaks.filtered.tpm.210k.txt -k F
+	time python $script_folder'sort_matrix/vlookup.py' -t $input_folder'homerTable3.peaks.filtered.tpm.txt' -m 1 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $input_folder'homerTable3.peaks.filtered.tpm.210k.txt' -k F
 	### plot index set TPM
 	echo 'plot index set TPM'
-	time Rscript $script_folder'figures/plot_index_set_signal_module.R' celltype.index_set.tpm.sorted.txt celltype.index.tpm.sorted.txt celltype.index_set.sorted.txt index_set_tpm_all.pdf index_set_tpm_thresh.pdf index_tpm.png red 200 0.1
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.tpm.sorted.txt' $index_set_sig_dir'celltype.index.tpm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_tpm_all.pdf' $index_set_figure_dir'index_set_tpm_thresh.pdf' $index_set_figure_dir'index_tpm.png' red 200 0.1 log2
 
 ##################################
 ### enriched IDEAS states
