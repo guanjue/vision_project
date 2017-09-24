@@ -30,7 +30,7 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	time python $script_folder'sort_matrix/vlookup.py' -t homerTable3.peaks.filtered.txt -m 4 -s celltype.index.sorted.txt -n 1 -o homerTable3.peaks.filtered.210k.txt -k F
 	### plot index set signal
 	echo 'plot index set signal'
-	time Rscript $script_folder'figures/plot_index_set_signal_module.R' celltype.index_set.signal.sorted.txt celltype.index.signal.sorted.txt celltype.index_set.sorted.txt index_set_signal_all.pdf index_set_signal_thresh.pdf index_signal.png red 200 0.01
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' celltype.index_set.signal.sorted.txt celltype.index.signal.sorted.txt celltype.index_set.sorted.txt index_set_signal_all.pdf index_set_signal_thresh.pdf index_signal.png red 200 0.01 log2
 
 	######## DNA region TPM
 	echo 'get cell type average matrix'

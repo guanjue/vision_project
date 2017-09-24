@@ -12,6 +12,7 @@ index_all_heatmap = args[6]
 color = args[7]
 threshold = as.numeric(args[8])
 small_num_for_log2 = as.numeric(args[9])
+tranform = args[10]
 
 ### set heatmap colors
 my_colorbar=colorRampPalette(c('white',color))(n = 128)
@@ -37,11 +38,15 @@ read_matrix = function(inputfile){
 
 ###########
 data_index_set_sig = read_index_set_sig_matrix(index_set_inputfile)
-data_index_set_sig = log2(data_index_set_sig + small_num_for_log2)
+if (tranform == 'log2'){
+	data_index_set_sig = log2(data_index_set_sig + small_num_for_log2)
+}
 data_index_set_01 = read_matrix(index_set_inputfile_binary)
 
 ### log2 scale
-data_index_set_01 = log2(data_index_set_01+1)
+if (tranform == 'log2'){
+	data_index_set_01 = log2(data_index_set_01+small_num_for_log2)
+}
 ### plot index set heatmap
 pheatmap(data_index_set_sig, color=my_colorbar, cluster_cols = FALSE,cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_set_all_heatmap)
 ### plot index set heatmap (filter by DNA region number threshold)
@@ -50,7 +55,10 @@ pheatmap(data_index_set_filtered, color=my_colorbar, cluster_cols = FALSE,cluste
 ###########
 ### read index matrix
 data_index = read_matrix(index_inputfile)
-data_index = log2(data_index + 0.01)
+if (tranform == 'log2'){
+	data_index = log2(data_index + small_num_for_log2)
+}
+
 ### plot index heatmap
 pheatmap(data_index, color=my_colorbar, cluster_cols = FALSE, cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_all_heatmap)
 ###########
