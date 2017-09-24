@@ -1,5 +1,5 @@
 
-script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
+script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/index_set/'
 ### get binary matrix & signal matrix ###
 echo binary matrix and signal matrix
 time python $script_folder'split_signal_binary_matrix.py' -i homerTable3.peaks.filtered.txt -n 4 -a homerTable3.peaks.filtered.interval.txt -x 4 -b homerTable3.peaks.filtered.signal.txt -y 32 -c homerTable3.peaks.filtered.binary_pattern.txt -z 60
