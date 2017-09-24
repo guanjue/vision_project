@@ -64,7 +64,7 @@ def get_index_set(inputmatrix, given_column_order, given_signal_level, sorted_in
 	### add row names
 	prime_mark_info_sorted_matrix = np.concatenate((prime_mark_id_sorted, prime_mark_info_sorted_info), axis = 1)
 
-	### write the all DNA region binary pattern
+	### write the all sorted DNA region binary pattern (index)
 	write2d_array(prime_mark_info_sorted_matrix, sorted_index_output+'.all.txt')
 
 	### keep the peaks that are called in both replicates in at least one cell type
@@ -97,7 +97,7 @@ def get_index_set(inputmatrix, given_column_order, given_signal_level, sorted_in
 	def write_index_set(output_name, index_set_dict, index_set_array, header):
 		result = open(output_name,'w')
 		### write header
-		result.write('index'+'\t')
+		result.write('name'+'\t')
 		for i in range(0,header.shape[1]-1):
 			result.write(header[0,i]+'\t')
 		result.write(str(header[0,header.shape[1]-1])+'\n')

@@ -1,4 +1,4 @@
-def vlookup(file1,file1_mcol,file2,file2_mcol,output_name):
+def vlookup(file1,file1_mcol,file2,file2_mcol,output_name, keep2nd):
 	# read the first table into a list
 	data01=open(file1,'r')
 	data011={}
@@ -22,9 +22,11 @@ def vlookup(file1,file1_mcol,file2,file2_mcol,output_name):
 			# save the first table info
 			for rec1 in data011[id2]:
 				match_data.append(rec1)
-			# save the second table info
-			for rec2 in records:
-				match_data.append(rec2)
+			if keep2nd == 'T':
+				# save the second table info
+				for rec2 in records:
+					match_data.append(rec2)
+			### append to final sorted matrix
 			data03.append(match_data)
 
 	data04=open(output_name,'w')
@@ -41,14 +43,14 @@ import getopt
 import sys
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"ht:m:s:n:o:")
+		opts, args = getopt.getopt(argv,"ht:m:s:n:o:k:")
 	except getopt.GetoptError:
-		print 'python vlookup.py -t first_table_file -m first_table_ID -s second_table_file -n second_table_ID -o output_name'
+		print 'python vlookup.py -t first_table_file -m first_table_ID -s second_table_file -n second_table_ID -o output_name -k keep2nd_matrix'
 		sys.exit(2)
 
 	for opt,arg in opts:
 		if opt=="-h":
-			print 'python vlookup.py -t first_table_file -m first_table_ID -s second_table_file -n second_table_ID -o output_name'
+			print 'python vlookup.py -t first_table_file -m first_table_ID -s second_table_file -n second_table_ID -o output_name -k keep2nd_matrix'
 			sys.exit()
 		elif opt=="-t":
 			file1=str(arg.strip())
@@ -60,7 +62,9 @@ def main(argv):
 			file2_mcol=int(arg.strip())
 		elif opt=="-o":
 			output_name=str(arg.strip())
-	vlookup(file1,file1_mcol,file2,file2_mcol,output_name)
+		elif opt=="-k":
+			keep2nd=str(arg.strip())
+	vlookup(file1, file1_mcol, file2, file2_mcol, output_name, keep2nd)
 
 if __name__=="__main__":
 	main(sys.argv[1:])

@@ -16,12 +16,17 @@ time python $script_folder'index_set/get_index_set.py' -i celltype.binary_patter
 
 ### plot index set
 time Rscript $script_folder'figures/plot_index_set_region_hist.R' celltype.index_set.sorted.txt
-time Rscript $script_folder'figures/plot_index_set_module.R' celltype.index_set.sorted.txt celltype.index.sorted.txt black 200 index_set_all.pdf index_set_thresh.pdf index.png
+time Rscript $script_folder'figures/plot_index_set_module.R' celltype.index_set.sorted.txt celltype.index.sorted.txt black 200 index_set_all.pdf index_set_thresh.pdf index.png black
 
 ##################################
 ### signal matrix sort
-time python $script_folder'index_set/vlookup.py' -t celltype.signal.txt -m  -s -n  -o
-celltype.signal.txt
+time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t celltype.signal.txt -a 1 -s celltype.index.sorted.txt -b 1 -r celltype.order.txt -q 75 -o celltype.index.signal.sorted.txt -p celltype.index_set.signal.sorted.txt
+
+### filter the original matrix to 210k matrix
+time python $script_folder'sort_matrix/vlookup.py' -t homerTable3.peaks.filtered.txt -m 4 -s celltype.index.sorted.txt -n 1 -o homerTable3.peaks.filtered.210k.txt -k F
+
+### plot index set signal
+time Rscript $script_folder'figures/plot_index_set_signal_module.R' celltype.index_set.signal.sorted.txt celltype.index.signal.sorted.txt black 200 index_set_signal_all.pdf index_set_signal_thresh.pdf index_signal.png red celltype.index_set.sorted.txt
 
 ##################################
 ### enriched IDEAS states
