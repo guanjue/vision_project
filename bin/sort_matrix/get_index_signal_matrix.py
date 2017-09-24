@@ -117,7 +117,7 @@ import getopt
 import sys
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"ht:a:s:b:r:o:p:")
+		opts, args = getopt.getopt(argv,"ht:a:s:b:r:q:o:p:")
 	except getopt.GetoptError:
 		print 'time python get_index_signal_matrix.py -t target_matrix -a target_id_col -s source_matrix -b source_id_col -r celltype.order -q quantile -o index.signal.output -p index_set.signal.output'
 		sys.exit(2)
