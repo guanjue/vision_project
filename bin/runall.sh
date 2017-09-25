@@ -23,6 +23,7 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
     	rm -r $index_set_figure_dir
 	fi
 	mkdir $index_set_figure_dir
+
 ##################################
 	######## index set module
 	### get binary matrix & signal matrix ###
@@ -57,7 +58,7 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 
 	######## DNA region TPM
 	echo 'get cell type average matrix'
-	time python $script_folder'index_set/merge_cell_type_data.py' -i homerTable3.peaks.filtered.tpm.txt -o $index_set_dir'celltype.tpm.txt'
+	time python $script_folder'index_set/merge_cell_type_data.py' -i $input_folder'homerTable3.peaks.filtered.tpm.txt' -o $index_set_dir'celltype.tpm.txt'
 	### tpm matrix sort
 	echo 'tpm matrix sort'
 	time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t $index_set_dir'celltype.tpm.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -q 75 -o $index_set_sig_dir'celltype.index.tpm.sorted.txt' -p $index_set_sig_dir'celltype.index_set.tpm.sorted.txt'
@@ -67,6 +68,19 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	### plot index set TPM
 	echo 'plot index set TPM'
 	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.tpm.sorted.txt' $index_set_sig_dir'celltype.index.tpm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_tpm_all.pdf' $index_set_figure_dir'index_set_tpm_thresh.pdf' $index_set_figure_dir'index_tpm.png' red 200 0.1 log2
+
+	######## DNA region RPKM
+	echo 'get cell type average matrix'
+	time python $script_folder'index_set/merge_cell_type_data.py' -i $input_folder'homerTable3.peaks.filtered.rpkm.txt' -o $index_set_dir'celltype.rpkm.txt'
+	### RPKM matrix sort
+	echo 'RPKM matrix sort'
+	time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t $index_set_dir'celltype.rpkm.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -q 75 -o $index_set_sig_dir'celltype.index.rpkm.sorted.txt' -p $index_set_sig_dir'celltype.index_set.rpkm.sorted.txt'
+	### filter the original matrix to 210k matrix
+	echo 'filter the original matrix to 210k matrix'
+	time python $script_folder'sort_matrix/vlookup.py' -t $input_folder'homerTable3.peaks.filtered.rpkm.txt' -m 1 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $input_folder'homerTable3.peaks.filtered.rpkm.210k.txt' -k F
+	### plot index set RPKM
+	echo 'plot index set RPKM'
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.rpkm.sorted.txt' $index_set_sig_dir'celltype.index.rpkm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_rpkm_all.pdf' $index_set_figure_dir'index_set_rpkm_thresh.pdf' $index_set_figure_dir'index_rpkm.png' red 200 0.1 log2
 
 ##################################
 ### enriched IDEAS states
