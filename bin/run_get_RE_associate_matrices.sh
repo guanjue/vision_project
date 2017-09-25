@@ -52,6 +52,6 @@ do
 done < input_data/ideas_cell_order.txt
 
 ### sort ideas state matrix cell type order (column order)
-time python $script_folder'index_set_re_enrich_matrix/ideas_state_cell_type_sort.py' -i 'ideas_bb/DNA_regin_210k.bed' -b 'input_data/ideas_cell_order.txt' -r 'input_data/homerTable3.peaks.filtered.txt' -o 'ideas_bb/DNA_regin_210k.celltype_sorted.txt'
+time python $script_folder'index_set_re_enrich_matrix/ideas_state_cell_type_sort.py' -i 'ideas_bb/DNA_regin_210k.bed' -b 'input_data/ideas_cell_order.txt' -r 'input_data/homerTable3.peaks.filtered.txt' -o 'ideas_bb/DNA_regin_210k.celltype_sorted.txt' -n 17
 
 

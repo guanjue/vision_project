@@ -24,7 +24,7 @@ def write2d_array(array,output):
 
 ################################################################################################
 
-def cell_type_sort(input_matrix, current_order, given_col_order, ideas_celltype_sorted_matrix):
+def cell_type_sort(input_matrix, current_order, given_col_order, ideas_celltype_sorted_matrix, na_state_number):
 	### read matrix
 	data = read2d_array(input_matrix, str)
 
@@ -77,26 +77,32 @@ def cell_type_sort(input_matrix, current_order, given_col_order, ideas_celltype_
 	### write info
 	for records in data_col_sorted:
 		for i in range(0, len(records)-1):
-			result.write(records[i]+'\t')
-		result.write(records[len(records)-1]+'\n')
+			if (records[i] != 'NA') and (records[i] != 'NA;NA'):
+				result.write(records[i]+'\t')
+			else:
+				result.write('NA;'+na_state_number+'\t')
+		if (records[len(records)-1] != 'NA') and (records[i] != 'NA;NA'):
+			result.write(records[len(records)-1]+'\n')
+		else:
+			result.write('NA;'+na_state_number+'\n')
 
 	result.close()
 
 ############################################################################
-#time python cell_type_sort.py -i reads_count_matrix_5end_tpm.txt -b bam_file.txt -r homerTable3.peaks.filtered.txt -o homerTable3.peaks.filtered.tpm.txt
+#time python cell_type_sort.py -i reads_count_matrix_5end_tpm.txt -b bam_file.txt -r homerTable3.peaks.filtered.txt -o homerTable3.peaks.filtered.tpm.txt -n 17
 
 import getopt
 import sys
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"hi:b:r:o:")
+		opts, args = getopt.getopt(argv,"hi:b:r:o:n:")
 	except getopt.GetoptError:
-		print 'time python cell_type_sort.py -i input_ideas_matrix -b current_order -r target_col_order -o ideas_celltype_sorted_matrix'
+		print 'time python cell_type_sort.py -i input_ideas_matrix -b current_order -r target_col_order -o ideas_celltype_sorted_matrix -n na_state_number'
 		sys.exit(2)
 
 	for opt,arg in opts:
 		if opt=="-h":
-			print 'time python cell_type_sort.py -i input_ideas_matrix -b current_order -r target_col_order -o ideas_celltype_sorted_matrix'
+			print 'time python cell_type_sort.py -i input_ideas_matrix -b current_order -r target_col_order -o ideas_celltype_sorted_matrix -n na_state_number'
 			sys.exit()
 		elif opt=="-i":
 			input_matrix=str(arg.strip())
@@ -106,8 +112,10 @@ def main(argv):
 			given_col_order=str(arg.strip())
 		elif opt=="-o":
 			ideas_celltype_sorted_matrix=str(arg.strip())
+		elif opt=="-n":
+			na_state_number=str(arg.strip())
 
-	cell_type_sort(input_matrix, current_order, given_col_order, ideas_celltype_sorted_matrix)
+	cell_type_sort(input_matrix, current_order, given_col_order, ideas_celltype_sorted_matrix, na_state_number)
 
 if __name__=="__main__":
 	main(sys.argv[1:])
