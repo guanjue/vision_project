@@ -42,35 +42,42 @@ data_index = read_matrix(index_inputfile)
 ### read index set binary pattern matrix
 data_index_set_01 = read_matrix(index_set_inputfile_binary)
 
-### log transform
-if (tranform == 'log2'){
-	data_index_set_sig = log2(data_index_set_sig + min(nnzero(data_index_set_sig)) )
-}
-
-### log2 scale
-if (tranform == 'log2'){
-	data_index_set_01 = log2(data_index_set_01+1)
-}
-
-if (tranform == 'log2'){
-	data_index = log2(data_index + min(nnzero(data_index)) )
-}
-
-### set upper limit for heatmap
-data_index_set_sig[data_index_set_sig >= quantile(data_index_set_sig, upper_lim_quantile)] = quantile(data_index_set_sig, upper_lim_quantile)
-data_index[data_index >= quantile(data_index, upper_lim_quantile)] = quantile(data_index, upper_lim_quantile)
-
 ### set heatmap colors
-my_colorbar=colorRampPalette(c('white',color))(n = 128)
+rgb_col_num=read.table('input_data/state_color.txt',header=F)
+rgb_col_num=rbind(rgb_col_num, c(255,255,255))
+print(rgb_col_num)
+rgb_col=apply(rgb_col_num,1,function(x) rgb(x[1],x[2],x[3],max=255))
+
+my_colorbar=colorRampPalette(rgb_col)(n = 35)
+col_breaks = c(
+        seq(0.1, 1,length=2),
+        seq(1.1, 2,length=2),
+        seq(2.1, 3,length=2),
+        seq(3.1, 4,length=2),
+        seq(4.1, 5,length=2),
+        seq(5.1, 6,length=2),
+        seq(6.1, 7,length=2),
+        seq(7.1, 8,length=2),
+        seq(8.1, 9,length=2),
+        seq(9.1, 10,length=2),
+        seq(10.1, 11,length=2),
+        seq(11.1, 12,length=2),
+        seq(12.1, 13,length=2),
+        seq(13.1, 14,length=2),
+        seq(14.1, 15,length=2),
+        seq(15.1, 16,length=2),
+        seq(16.1, 17,length=2),
+        seq(17.1, 18,length=2)
+)
 
 ### plot index set heatmap
-pheatmap(data_index_set_sig, color=my_colorbar, cluster_cols = FALSE,cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_set_all_heatmap)
+pheatmap(data_index_set_sig+1, color=my_colorbar, breaks=col_breaks, cluster_cols = FALSE,cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_set_all_heatmap)
 ### plot index set heatmap (filter by DNA region number threshold)
-data_index_set_filtered = data_index_set_sig[apply(data_index_set_01, 1, max) >= log2(threshold), ]
-pheatmap(data_index_set_filtered, color=my_colorbar, cluster_cols = FALSE,cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_set_thresh_heatmap)
+data_index_set_filtered = data_index_set_sig[apply(data_index_set_01, 1, max) >= threshold, ]
+pheatmap(data_index_set_filtered+1, color=my_colorbar, breaks=col_breaks, cluster_cols = FALSE,cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_set_thresh_heatmap)
 ###########
 ### plot index heatmap
-pheatmap(data_index, color=my_colorbar, cluster_cols = FALSE, cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_all_heatmap)
+pheatmap(data_index+1, color=my_colorbar, breaks=col_breaks, cluster_cols = FALSE, cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_all_heatmap)
 ###########
 
 # Rscript plot_index_set_module.R celltype.index_set.sorted.txt celltype.binary_pattern.sorted.txt black 200 index_set_all.pdf index_set_thresh.pdf index.png

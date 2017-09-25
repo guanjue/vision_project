@@ -99,7 +99,7 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	#time bash run_get_RE_associate_matrices.sh
 
 	### get index set most Frequent ideas state matrix
-	time python $script_folder'index_set_re_enrich_matrix/most_freq_matrix.py' -t 'ideas_bb/DNA_regin_210k.celltype_sorted.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -q 75 -o $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' -p $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted.txt'
+	time python $script_folder'index_set_re_enrich_matrix/most_freq_matrix.py' -t 'ideas_bb/DNA_regin_210k.celltype_sorted.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -o $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' -p $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted.txt' -n 17
 
 	### plot index set most Frequent ideas state matrix
 	echo 'plot index set most Frequent ideas state matrix'

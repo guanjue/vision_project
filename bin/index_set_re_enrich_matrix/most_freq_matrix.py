@@ -42,7 +42,7 @@ def write2d_array(array,output):
 	r1.close()
 
 ################################################################################################
-def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, given_column_order, quantile, target_matrix_sorted_output, sorted_index_set_signal_output):
+def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, given_column_order, target_matrix_sorted_output, sorted_index_set_signal_output, na_state_number):
 	### read given cell type order
 	column_oder = read2d_array(given_column_order,str)
 	order = np.array(np.transpose(column_oder[:,0]),dtype=int)
@@ -82,8 +82,6 @@ def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, gi
 		for i in index_info[1:]:
 			index_merge = index_merge+'_'+str(i)
 		### get the number of DNA regions in index set
-		if 'NA' in signal_info:
-			print(signal_info)
 		if not (index_merge in index_set_sig_dict):
 			index_set_sig_dict[index_merge] = [ signal_info ]
 			index_set.append(index_merge)
@@ -91,7 +89,7 @@ def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, gi
 			index_set_sig_dict[index_merge].append(signal_info)
 
 	### write index set median signal matrix
-	def write_index_set_signal_matrix(output_name, index_set_sig_dict, index_set_array, header, quantile):
+	def write_index_set_signal_matrix(output_name, index_set_sig_dict, index_set_array, header, na_state_number):
 		result = open(output_name,'w')
 		### write header
 		result.write('name'+'\t')
@@ -105,7 +103,11 @@ def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, gi
 			index_set_ideas_matrix = np.array(index_set_sig_dict[pattern], dtype = int)
 			signal_vector = []
 			for i in range(0,index_set_ideas_matrix.shape[1]):
-				index_set_ideas_matrix_celltype_tmp = index_set_ideas_matrix[:,i]
+				index_set_ideas_matrix_celltype_tmp = np.array(index_set_ideas_matrix[:,i])
+				### rm NAs if there are non-NAs
+				if len(index_set_ideas_matrix_celltype_tmp[np.where(index_set_ideas_matrix_celltype_tmp<int(na_state_number))]) != 0:
+					index_set_ideas_matrix_celltype_tmp = index_set_ideas_matrix_celltype_tmp[np.where(index_set_ideas_matrix_celltype_tmp<int(na_state_number))]
+				#print(index_set_ideas_matrix_celltype_tmp)
 				most_frequent_state = np.argmax(np.bincount(index_set_ideas_matrix_celltype_tmp))
 				signal_vector.append(most_frequent_state)
 
@@ -116,24 +118,24 @@ def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, gi
 			result.write(str(signal_vector[len(signal_vector)-1])+'\n')
 		result.close()
 
-	write_index_set_signal_matrix(sorted_index_set_signal_output, index_set_sig_dict, index_set, header, quantile)
+	write_index_set_signal_matrix(sorted_index_set_signal_output, index_set_sig_dict, index_set, header, na_state_number)
 
 ############################################################################
 ############################################################################
-#time python get_index_signal_matrix.py -t celltype.signal.txt -a 1 -s celltype.index.sorted.txt -b 1 -r celltype.order.txt -q 75 -o celltype.index.signal.sorted.txt -p celltype.index_set.signal.sorted.txt
+#time python get_index_signal_matrix.py -t celltype.signal.txt -a 1 -s celltype.index.sorted.txt -b 1 -r celltype.order.txt -o celltype.index.signal.sorted.txt -p celltype.index_set.signal.sorted.txt -n 17
 
 import getopt
 import sys
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"ht:a:s:b:r:q:o:p:")
+		opts, args = getopt.getopt(argv,"ht:a:s:b:r:q:o:p:n:")
 	except getopt.GetoptError:
-		print 'time python get_index_signal_matrix.py -t target_matrix -a target_id_col -s source_matrix -b source_id_col -r celltype.order -q quantile -o index.signal.output -p index_set.signal.output'
+		print 'time python get_index_signal_matrix.py -t target_matrix -a target_id_col -s source_matrix -b source_id_col -r celltype.order -o index.signal.output -p index_set.signal.output -n na_state_number'
 		sys.exit(2)
 
 	for opt,arg in opts:
 		if opt=="-h":
-			print 'time python get_index_signal_matrix.py -t target_matrix -a target_id_col -s source_matrix -b source_id_col -r celltype.order -q quantile -o index.signal.output -p index_set.signal.output'
+			print 'time python get_index_signal_matrix.py -t target_matrix -a target_id_col -s source_matrix -b source_id_col -r celltype.order -o index.signal.output -p index_set.signal.output -n na_state_number'
 			sys.exit()
 		elif opt=="-t":
 			target_matrix=str(arg.strip())
@@ -145,14 +147,14 @@ def main(argv):
 			s_id_col=int(arg.strip())
 		elif opt=="-r":
 			given_column_order=str(arg.strip())
-		elif opt=="-q":
-			quantile=float(arg.strip())
 		elif opt=="-o":
 			target_matrix_sorted=str(arg.strip())
 		elif opt=="-p":
 			sorted_index_set_signal_output=str(arg.strip())
+		elif opt=="-n":
+			na_state_number=str(arg.strip())
 
-	get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, given_column_order, quantile, target_matrix_sorted, sorted_index_set_signal_output)
+	get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, given_column_order, target_matrix_sorted, sorted_index_set_signal_output, na_state_number)
 
 if __name__=="__main__":
 	main(sys.argv[1:])
