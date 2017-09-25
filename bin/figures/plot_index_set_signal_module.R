@@ -13,12 +13,8 @@ index_all_heatmap = args[6]
 
 color = args[7]
 threshold = as.numeric(args[8])
-#small_num_for_log2 = as.numeric(args[9])
-tranform = args[9]
-
-### set heatmap colors
-my_colorbar=colorRampPalette(c('white',color))(n = 128)
-col_breaks = c(seq(0, 2000,length=33))
+upper_lim_quantile = as.numeric(args[9])
+tranform = args[10]
 
 ### read index set signal matrix
 read_index_set_sig_matrix = function(inputfile){
@@ -48,7 +44,7 @@ data_index_set_01 = read_matrix(index_set_inputfile_binary)
 
 ### log transform
 if (tranform == 'log2'){
-	data_index_set_sig = log2(data_index_set_sig + min(nnzero(data_index)) )
+	data_index_set_sig = log2(data_index_set_sig + min(nnzero(data_index_set_sig)) )
 }
 
 ### log2 scale
@@ -59,6 +55,13 @@ if (tranform == 'log2'){
 if (tranform == 'log2'){
 	data_index = log2(data_index + min(nnzero(data_index)) )
 }
+
+### set upper limit for heatmap
+data_index_set_sig[data_index_set_sig >= quantile(data_index_set_sig, upper_lim_quantile)] = quantile(data_index_set_sig, upper_lim_quantile)
+data_index[data_index >= quantile(data_index, upper_lim_quantile)] = quantile(data_index, upper_lim_quantile)
+
+### set heatmap colors
+my_colorbar=colorRampPalette(c('white',color))(n = 128)
 
 ### plot index set heatmap
 pheatmap(data_index_set_sig, color=my_colorbar, cluster_cols = FALSE,cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_set_all_heatmap)

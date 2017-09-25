@@ -35,8 +35,8 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	time python $script_folder'index_set/merge_cell_type_data.py' -i $index_set_dir'homerTable3.peaks.filtered.binary_pattern.txt' -o $index_set_dir'celltype.binary_pattern.txt'
 	time python $script_folder'index_set/merge_cell_type_data.py' -i $index_set_dir'homerTable3.peaks.filtered.signal.txt' -o $index_set_dir'celltype.signal.txt'
 
-	### get index sets
-	echo 'get index sets'
+	### get index sets (CORE!!!)
+	echo 'get index sets (CORE!!!)'
 	time python $script_folder'index_set/get_index_set.py' -i $index_set_dir'celltype.binary_pattern.txt' -r $input_folder'celltype.order.txt' -l $input_folder'signal_level_range.txt' -f $index_set_dir'celltype.index.sorted.txt' -s $index_set_dir'celltype.index_set.sorted.txt'
 
 	### plot index set
@@ -54,7 +54,7 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	time python $script_folder'sort_matrix/vlookup.py' -t $input_folder'homerTable3.peaks.filtered.txt' -m 4 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $input_folder'homerTable3.peaks.filtered.210k.txt' -k F
 	### plot index set signal
 	echo 'plot index set signal'
-	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.signal.sorted.txt' $index_set_sig_dir'celltype.index.signal.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_signal_all.pdf' $index_set_figure_dir'index_set_signal_thresh.pdf' $index_set_figure_dir'index_signal.png' red 200 log2
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.signal.sorted.txt' $index_set_sig_dir'celltype.index.signal.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_signal_all.pdf' $index_set_figure_dir'index_set_signal_thresh.pdf' $index_set_figure_dir'index_signal.png' red 200 0.99 log2
 
 	######## DNA region TPM
 	echo 'get cell type average matrix'
@@ -67,7 +67,7 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	time python $script_folder'sort_matrix/vlookup.py' -t $input_folder'homerTable3.peaks.filtered.tpm.txt' -m 1 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $input_folder'homerTable3.peaks.filtered.tpm.210k.txt' -k F
 	### plot index set TPM
 	echo 'plot index set TPM'
-	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.tpm.sorted.txt' $index_set_sig_dir'celltype.index.tpm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_tpm_all.pdf' $index_set_figure_dir'index_set_tpm_thresh.pdf' $index_set_figure_dir'index_tpm.png' red 200 log2
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.tpm.sorted.txt' $index_set_sig_dir'celltype.index.tpm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_tpm_all.pdf' $index_set_figure_dir'index_set_tpm_thresh.pdf' $index_set_figure_dir'index_tpm.png' red 200 0.99 log2
 
 	######## DNA region RPKM
 	echo 'get cell type average matrix'
@@ -80,15 +80,24 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	time python $script_folder'sort_matrix/vlookup.py' -t $input_folder'homerTable3.peaks.filtered.rpkm.txt' -m 1 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $input_folder'homerTable3.peaks.filtered.rpkm.210k.txt' -k F
 	### plot index set RPKM
 	echo 'plot index set RPKM'
-	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.rpkm.sorted.txt' $index_set_sig_dir'celltype.index.rpkm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_rpkm_all.pdf' $index_set_figure_dir'index_set_rpkm_thresh.pdf' $index_set_figure_dir'index_rpkm.png' red 200 log2
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.rpkm.sorted.txt' $index_set_sig_dir'celltype.index.rpkm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_rpkm_all.pdf' $index_set_figure_dir'index_set_rpkm_thresh.pdf' $index_set_figure_dir'index_rpkm.png' red 200 0.99 log2
 
 ##################################
 ### enriched IDEAS states
-	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.signal.sorted.txt' $index_set_sig_dir'celltype.index.signal.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_signal_all.pdf' $index_set_figure_dir'index_set_signal_thresh.pdf' $index_set_figure_dir'index_signal.png' red 200 log2
 
-	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.tpm.sorted.txt' $index_set_sig_dir'celltype.index.tpm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_tpm_all.pdf' $index_set_figure_dir'index_set_tpm_thresh.pdf' $index_set_figure_dir'index_tpm.png' red 200 log2
 
-	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.rpkm.sorted.txt' $index_set_sig_dir'celltype.index.rpkm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_rpkm_all.pdf' $index_set_figure_dir'index_set_rpkm_thresh.pdf' $index_set_figure_dir'index_rpkm.png' red 200 log2
+	### sort ideas state matrix columns
 
+
+	echo 'filter the interval matrix to 210k matrix'
+	time python $script_folder'sort_matrix/vlookup.py' -t $index_set_dir'homerTable3.peaks.filtered.interval.txt' -m 1 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $input_folder'homerTable3.peaks.filtered.interval.210k.txt' -k F
+
+
+
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.signal.sorted.txt' $index_set_sig_dir'celltype.index.signal.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_signal_all.pdf' $index_set_figure_dir'index_set_signal_thresh.pdf' $index_set_figure_dir'index_signal.png' red 200 0.99 log2
+
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.tpm.sorted.txt' $index_set_sig_dir'celltype.index.tpm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_tpm_all.pdf' $index_set_figure_dir'index_set_tpm_thresh.pdf' $index_set_figure_dir'index_tpm.png' red 200 0.99 log2
+
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.rpkm.sorted.txt' $index_set_sig_dir'celltype.index.rpkm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_rpkm_all.pdf' $index_set_figure_dir'index_set_rpkm_thresh.pdf' $index_set_figure_dir'index_rpkm.png' red 200 0.99 log2
 
 
