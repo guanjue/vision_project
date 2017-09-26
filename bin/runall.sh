@@ -99,11 +99,11 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	#time bash run_get_RE_associate_matrices.sh
 
 	### get index set most Frequent ideas state matrix
-	time python $script_folder'index_set_re_enrich_matrix/most_freq_matrix.py' -t 'ideas_bb/DNA_regin_210k.celltype_sorted.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -o $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' -p $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted.txt' -n 17
+	time python $script_folder'index_set_re_enrich_matrix/most_freq_matrix.py' -t 'ideas_bb/DNA_regin_210k.celltype_sorted.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -o $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' -p $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted' -n 17
 
 	### plot index set most Frequent ideas state matrix
 	echo 'plot index set most Frequent ideas state matrix'
-	time Rscript $script_folder'figures/plot_index_set_ideas_state_module.R' $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted.txt' $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_ideas_RE_all.pdf' $index_set_figure_dir'index_set_ideas_RE_thresh.pdf' $index_set_figure_dir'index_ideas_RE.png' red 200 0.99 log2
+	time Rscript $script_folder'figures/plot_index_set_ideas_state_module.R' $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted.freq_state.txt' $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted.state.se.txt' $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_ideas_RE_all.pdf' $index_set_figure_dir'index_set_ideas_RE_thresh.pdf' $index_set_figure_dir'index_set_ideas_RE_SE_all.pdf' $index_set_figure_dir'index_set_ideas_RE_SE_thresh.pdf' $index_set_figure_dir'index_ideas_RE.png' red 200 0.99 log2
 
 
 

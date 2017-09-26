@@ -4,17 +4,24 @@ library(Matrix)
 ### get parameters
 args = commandArgs(trailingOnly=TRUE)
 index_set_inputfile = args[1]
-index_inputfile = args[2]
-index_set_inputfile_binary = args[3]
+index_set_se_inputfile = args[2]
 
-index_set_all_heatmap = args[4]
-index_set_thresh_heatmap = args[5]
-index_all_heatmap = args[6]
+index_inputfile = args[3]
+index_set_inputfile_binary = args[4]
 
-color = args[7]
-threshold = as.numeric(args[8])
-upper_lim_quantile = as.numeric(args[9])
-tranform = args[10]
+index_set_all_heatmap = args[5]
+index_set_thresh_heatmap = args[6]
+
+index_set_se_all_heatmap = args[7]
+index_set_se_thresh_heatmap = args[8]
+
+index_all_heatmap = args[9]
+
+color = args[10]
+threshold = as.numeric(args[11])
+upper_lim_quantile = as.numeric(args[12])
+tranform = args[13]
+
 
 ### read index set signal matrix
 read_index_set_sig_matrix = function(inputfile){
@@ -37,6 +44,9 @@ read_matrix = function(inputfile){
 ###########
 ### read index set signal matrix
 data_index_set_sig = read_index_set_sig_matrix(index_set_inputfile)
+### read index set shannon entropy matrix
+data_index_set_se = read_index_set_sig_matrix(index_set_se_inputfile)
+
 ### read index matrix
 data_index = read_matrix(index_inputfile)
 ### read index set binary pattern matrix
@@ -75,6 +85,13 @@ pheatmap(data_index_set_sig+1, color=my_colorbar, breaks=col_breaks, cluster_col
 ### plot index set heatmap (filter by DNA region number threshold)
 data_index_set_filtered = data_index_set_sig[apply(data_index_set_01, 1, max) >= threshold, ]
 pheatmap(data_index_set_filtered+1, color=my_colorbar, breaks=col_breaks, cluster_cols = FALSE,cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_set_thresh_heatmap)
+
+### plot index set Shannon Entropy heatmap
+pheatmap(data_index_set_se, color=colorRampPalette(c(rgb(1,1,1,1),rgb(1,1,1,0)), alpha = TRUE)(n = 128), cluster_cols = FALSE,cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_set_se_all_heatmap)
+### plot index set Shannon Entropy heatmap (filter by DNA region number threshold)
+data_index_set_se_filtered = data_index_set_se[apply(data_index_set_01, 1, max) >= threshold, ]
+pheatmap(data_index_set_se_filtered, color=colorRampPalette(c(rgb(1,1,1,1),rgb(1,1,1,0)), alpha = TRUE)(n = 128), cluster_cols = FALSE,cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_set_se_thresh_heatmap)
+
 ###########
 ### plot index heatmap
 pheatmap(data_index+1, color=my_colorbar, breaks=col_breaks, cluster_cols = FALSE, cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_all_heatmap)

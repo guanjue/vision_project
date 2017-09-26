@@ -40,6 +40,16 @@ def write2d_array(array,output):
 			r1.write(str(records[i])+'\t')
 		r1.write(str(records[len(records)-1])+'\n')
 	r1.close()
+################################################################################################
+### Shannon Entropy
+def shannon_entropy(element_vector):
+	counts = np.bincount(element_vector)
+	total = np.sum(counts)
+	probability = counts / float(total)
+	probability = probability[probability!=0]
+	shannon_entropy = np.sum(probability * np.log2(probability))
+	return shannon_entropy
+
 
 ################################################################################################
 def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, given_column_order, target_matrix_sorted_output, sorted_index_set_signal_output, na_state_number):
@@ -89,36 +99,56 @@ def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, gi
 			index_set_sig_dict[index_merge].append(signal_info)
 
 	### write index set median signal matrix
-	def write_index_set_signal_matrix(output_name, index_set_sig_dict, index_set_array, header, na_state_number):
-		result = open(output_name,'w')
+	def write_index_set_state_se_matrix(output_name, index_set_sig_dict, index_set_array, header, na_state_number):
+		result_freq_state = open(output_name+'.freq_state.txt','w')
+		result_se = open(output_name+'.state.se.txt','w')
 		### write header
-		result.write('name'+'\t')
+		result_freq_state.write('name'+'\t')
 		for i in range(0,header.shape[1]-1):
-			result.write(header[0,i]+'\t')
-		result.write(str(header[0,header.shape[1]-1])+'\n')
+			result_freq_state.write(header[0,i]+'\t')
+		result_freq_state.write(str(header[0,header.shape[1]-1])+'\n')
+
+		result_se.write('name'+'\t')
+		for i in range(0,header.shape[1]-1):
+			result_se.write(header[0,i]+'\t')
+		result_se.write(str(header[0,header.shape[1]-1])+'\n')
 
 		### write index set signal info
 		for pattern in index_set_array:
 			### get index set signal median for each cell type
 			index_set_ideas_matrix = np.array(index_set_sig_dict[pattern], dtype = int)
 			signal_vector = []
+			se_vector = []
 			for i in range(0,index_set_ideas_matrix.shape[1]):
 				index_set_ideas_matrix_celltype_tmp = np.array(index_set_ideas_matrix[:,i])
 				### rm NAs if there are non-NAs
 				if len(index_set_ideas_matrix_celltype_tmp[np.where(index_set_ideas_matrix_celltype_tmp<int(na_state_number))]) != 0:
 					index_set_ideas_matrix_celltype_tmp = index_set_ideas_matrix_celltype_tmp[np.where(index_set_ideas_matrix_celltype_tmp<int(na_state_number))]
-				#print(index_set_ideas_matrix_celltype_tmp)
+
+				### get shannon entropy
+				se = shannon_entropy(index_set_ideas_matrix_celltype_tmp)
+				se_vector.append(se)
+
+				### get most frequent state
 				most_frequent_state = np.argmax(np.bincount(index_set_ideas_matrix_celltype_tmp))
 				signal_vector.append(most_frequent_state)
 
 			### signal vector info
-			result.write(pattern[1:]+'\t')
+			result_freq_state.write(pattern[1:]+'\t')
 			for i in range(0, len(signal_vector)-1):
-				result.write(str(signal_vector[i])+'\t') 
-			result.write(str(signal_vector[len(signal_vector)-1])+'\n')
-		result.close()
+				result_freq_state.write(str(signal_vector[i])+'\t') 
+			result_freq_state.write(str(signal_vector[len(signal_vector)-1])+'\n')
 
-	write_index_set_signal_matrix(sorted_index_set_signal_output, index_set_sig_dict, index_set, header, na_state_number)
+			### Shannon Entropy vector info
+			result_se.write(pattern[1:]+'\t')
+			for i in range(0, len(se_vector)-1):
+				result_se.write(str(se_vector[i])+'\t') 
+			result_se.write(str(se_vector[len(se_vector)-1])+'\n')
+
+		result_freq_state.close()		
+		result_se.close()
+
+	write_index_set_state_se_matrix(sorted_index_set_signal_output, index_set_sig_dict, index_set, header, na_state_number)
 
 ############################################################################
 ############################################################################
