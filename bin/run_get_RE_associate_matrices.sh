@@ -18,7 +18,7 @@ do
 	echo $celltype_name
 
 	### convert bigbed to bed file
-	#$script_folder'index_set_re_enrich_matrix/bigBedToBed' 'ideas_bb/ideasVision'$celltype_id_num'.bb' 'ideas_bb/ideasVision'$celltype_id_num'.bed'
+	#$script_folder'index_set_RE_freq_matrix/bigBedToBed' 'ideas_bb/ideasVision'$celltype_id_num'.bb' 'ideas_bb/ideasVision'$celltype_id_num'.bed'
 	#cat 'ideas_bb/ideasVision'$celltype_id_num'.bed' | sort -k1,1 -k2,2n > 'ideas_bb/ideasVision'$celltype_id_num'.sort.bed'
 	#rm 'ideasVision'$celltype_id_num'.bed'
 	
@@ -34,10 +34,10 @@ do
 		}' > 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.bed'
 
 	### get bed file with color
-	python $script_folder'index_set_re_enrich_matrix/get_cRE_ideas_state.py' -a 'input_data/homerTable3.peaks.filtered.interval.210k.txt' -i 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.bed' -o 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.colored.bed'
+	python $script_folder'index_set_RE_freq_matrix/get_cRE_ideas_state.py' -a 'input_data/homerTable3.peaks.filtered.interval.210k.txt' -i 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.bed' -o 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.colored.bed'
 
 	### add label names
-	time python $script_folder'index_set_re_enrich_matrix/add_label_name.py' -i 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.colored.bed' -l 'input_data/ideas_state_label.txt' -o 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.colored.named.bed'
+	time python $script_folder'index_set_RE_freq_matrix/add_label_name.py' -i 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.colored.bed' -l 'input_data/ideas_state_label.txt' -o 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.colored.named.bed'
 
 	### get ideas state matrix
 	cat 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.colored.named.bed' | awk -F '\t' -v OFS='\t' '{print $4}' > 'ideas_bb/DNA_intervals_210k.'$celltype_id_num'.colored.named.txt'
@@ -52,6 +52,6 @@ do
 done < input_data/ideas_cell_order.txt
 
 ### sort ideas state matrix cell type order (column order)
-time python $script_folder'index_set_re_enrich_matrix/ideas_state_cell_type_sort.py' -i 'ideas_bb/DNA_regin_210k.bed' -b 'input_data/ideas_cell_order.txt' -r 'input_data/homerTable3.peaks.filtered.txt' -o 'ideas_bb/DNA_regin_210k.celltype_sorted.txt' -n 17
+time python $script_folder'index_set_RE_freq_matrix/ideas_state_cell_type_sort.py' -i 'ideas_bb/DNA_regin_210k.bed' -b 'input_data/ideas_cell_order.txt' -r 'input_data/homerTable3.peaks.filtered.txt' -o 'ideas_bb/DNA_regin_210k.celltype_sorted.txt' -n 17
 
 

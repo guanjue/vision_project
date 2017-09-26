@@ -71,6 +71,9 @@ pheatmap(data_index_set_filtered, color=my_colorbar, cluster_cols = FALSE,cluste
 ###########
 ### plot index heatmap
 pheatmap(data_index, color=my_colorbar, cluster_cols = FALSE, cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = index_all_heatmap)
+### plot signal musk
+pheatmap(data_index, color=colorRampPalette(c(rgb(0,0,0,1),rgb(1,1,1,0)), alpha = TRUE)(n = 128), cluster_cols = FALSE, cluster_rows=FALSE,annotation_names_row=FALSE,annotation_names_col=TRUE,show_rownames=FALSE,show_colnames=TRUE, filename = paste(index_all_heatmap, '.musk.png', sep='') )
+
 ###########
 
 # Rscript plot_index_set_module.R celltype.index_set.sorted.txt celltype.binary_pattern.sorted.txt black 200 index_set_all.pdf index_set_thresh.pdf index.png

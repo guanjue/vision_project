@@ -16,8 +16,6 @@ read_matrix = function(inputfile){
 
 ###########
 data_index_set = read_matrix(index_set_inputfile)
-### log2 scale
-#data_index_set = log2(data_index_set+1)
 
 DNA_region_num = apply(data_index_set, 1, max) 
 
