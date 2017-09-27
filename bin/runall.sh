@@ -3,29 +3,30 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 ##################################
 	###### initiate folders
 	input_folder='input_data/'
-	### mkdir index_set module folder
 	index_set_dir='index_set_matrix/'
+	index_set_sig_dir='index_set_sig_matrix/'
+	index_set_ideas_RE_dir='index_set_ideas_RE/'
+	index_set_figure_dir='index_set_figure/'
+
+	### mkdir index_set module folder
 	if [ -d "$index_set_dir" ]; then  
     	rm -r $index_set_dir
 	fi
 	mkdir $index_set_dir
 
 	### mkdir index_set module folder
-	index_set_sig_dir='index_set_sig_matrix/'
 	if [ -d "$index_set_sig_dir" ]; then  
     	rm -r $index_set_sig_dir
 	fi
 	mkdir $index_set_sig_dir
 
 	### mkdir ideas state output folder
-	index_set_ideas_RE_dir='index_set_ideas_RE/'
 	if [ -d "$index_set_ideas_RE_dir" ]; then  
     	rm -r $index_set_ideas_RE_dir
 	fi
 	mkdir $index_set_ideas_RE_dir
 
 	### mkdir figure folder
-	index_set_figure_dir='index_set_figure/'
 	if [ -d "$index_set_figure_dir" ]; then  
     	rm -r $index_set_figure_dir
 	fi
