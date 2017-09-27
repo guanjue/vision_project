@@ -72,7 +72,7 @@ def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, gi
 	write2d_array(target_mark_info_sorted_matrix, target_matrix_sorted_output)
 
 
-	### get index sets median signal
+	### get index sets quantile signal
 	index_set_sig_dict = {}
 	index_set = []
 	for index_info, signal_info in zip( source_mark0[1:,:], target_mark_sorted):
@@ -86,7 +86,7 @@ def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, gi
 		else:
 			index_set_sig_dict[index_merge].append(signal_info)
 
-	### write index set median signal matrix
+	### write index set quantile signal matrix
 	def write_index_set_signal_matrix(output_name, index_set_sig_dict, index_set_array, header, quantile):
 		result = open(output_name,'w')
 		### write header
@@ -97,7 +97,7 @@ def get_index_signal_matrix(target_matrix, t_id_col, source_matrix, s_id_col, gi
 
 		### write index set signal info
 		for pattern in index_set_array:
-			### get index set signal median for each cell type
+			### get index set signal quantile for each cell type
 			signal_vector = np.percentile(np.array(index_set_sig_dict[pattern], dtype = float), quantile, axis=0)
 
 			### signal vector info
