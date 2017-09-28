@@ -51,7 +51,6 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	echo 'plot index set'
 	time Rscript $script_folder'figures/plot_index_set_region_hist.R' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_hist.pdf' $index_set_figure_dir'index_hist_noxlim.pdf'
 	time Rscript $script_folder'figures/plot_index_set_module.R' $index_set_dir'celltype.index_set.sorted.txt' $index_set_dir'celltype.index.sorted.txt' black 200 $index_set_figure_dir'index_set_all.pdf' $index_set_figure_dir'index_set_thresh.pdf' $index_set_figure_dir'index.png' black
-	time Rscript $script_folder'figures/plot_celltype_cRE_hist.R' $index_set_dir'celltype.index.sorted.txt' $index_set_figure_dir'cRE_celltype_number.pdf'
 
 ##################################
 	######## homer signal
@@ -105,10 +104,15 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 
 	### plot index set most Frequent ideas state matrix
 	echo 'plot index set most Frequent ideas state matrix'
-	time Rscript $script_folder'figures/plot_index_set_ideas_state_module.R' $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted.freq_state.txt' $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted.state.se.txt' $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_ideas_RE_all.pdf' $index_set_figure_dir'index_set_ideas_RE_thresh.pdf' $index_set_figure_dir'index_set_ideas_RE_SE_all.pdf' $index_set_figure_dir'index_set_ideas_RE_SE_thresh.pdf' $index_set_figure_dir'index_ideas_RE.png' red 200 0.99 log2
+	time Rscript $script_folder'figures/plot_index_set_ideas_state_module.R' $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted.freq_state.txt' $index_set_ideas_RE_dir'celltype.index_set.ideas_RE.sorted.state.se.txt' $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_ideas_RE_all.pdf' $index_set_figure_dir'index_set_ideas_RE_thresh.pdf' $index_set_figure_dir'index_set_ideas_RE_SE_all.pdf' $index_set_figure_dir'index_set_ideas_RE_SE_thresh.pdf' $index_set_figure_dir'index_ideas_RE.png' $input_folder'state_color.txt' 200 0.99 log2
 
 ##################################
 ### specific analysis
+	### run PCA for each sample based on 210k cRES
+	time Rscript $script_folder'figures/sample_cor_and_PCA.R' $input_folder'homerTable3.peaks.filtered.210k.txt' $index_set_figure_dir'homerTable3.peaks.filtered.210k' 5 spearman
+	time Rscript $script_folder'figures/sample_cor_and_PCA.R' $input_folder'homerTable3.peaks.filtered.tpm.210k.txt' $index_set_figure_dir'homerTable3.peaks.filtered.tpm.210k' 2 spearman
+	time Rscript $script_folder'figures/sample_cor_and_PCA.R' $input_folder'homerTable3.peaks.filtered.rpkm.210k.txt' $index_set_figure_dir'homerTable3.peaks.filtered.rpkm.210k' 2 spearman
+
 	### select cREs with at least 1 active ideas state in 16 cell types
 	time python $script_folder'index_set_RE_freq_matrix/select_cREs_by_ideas_state.py' -t $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' -a $input_folder'ideas_active_state_label.txt' -o $index_set_ideas_RE_dir'celltype.index.sorted.active_state_filtered.txt'
 
@@ -116,4 +120,16 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	time python $script_folder'index_set_RE_freq_matrix/select_cREs_by_all_one_ideas_state.py' -t $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' -a $input_folder'atac_only_ideas_state_label.txt' -o $index_set_ideas_RE_dir'celltype.index.sorted.atac_only_state_filtered.txt' -s 17
 	### select cREs with at ctcf only ideas state in all 16 cell types
 	time python $script_folder'index_set_RE_freq_matrix/select_cREs_by_all_one_ideas_state.py' -t $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' -a $input_folder'ctcf_only_ideas_state_label.txt' -o $index_set_ideas_RE_dir'celltype.index.sorted.ctcf_only_state_filtered.txt' -s 17
+
+	### plot cRE number for each cell type 
+	time Rscript $script_folder'figures/plot_celltype_cRE_hist.R' $index_set_dir'celltype.index.sorted.txt' $index_set_figure_dir'cRE_celltype_number.pdf'
+
+	### plot the proportion of each ideas state in cRE for each cell type
+	time Rscript $script_folder'figures/plot_celltype_cRE_IDEASpro_bar.R' $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' $input_folder'state_color.txt' $index_set_figure_dir'celltype_cRE_IDEASpro_bar.pdf'
+
+
+
+
+
+
 

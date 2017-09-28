@@ -53,7 +53,7 @@ data_index = read_matrix(index_inputfile)
 data_index_set_01 = read_matrix(index_set_inputfile_binary)
 
 ### set heatmap colors
-rgb_col_num=read.table('input_data/state_color.txt',header=F)
+rgb_col_num=read.table(color,header=F)
 rgb_col_num=rbind(rgb_col_num, c(255,255,255))
 print(rgb_col_num)
 rgb_col=apply(rgb_col_num,1,function(x) rgb(x[1],x[2],x[3],max=255))
