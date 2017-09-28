@@ -51,12 +51,6 @@ rgb_col=apply(rgb_col_num,1,function(x) rgb(x[1],x[2],x[3],max=255))
 
 my_colorbar=colorRampPalette(rgb_col)(n = dim(rgb_col_num)[1])
 
-col_breaks = c()
-for (i in c(1: dim(rgb_col_num)[1])){
-	tmp_range = seq(i-1+0.1, i-1+1,length=2)
-	col_breaks = append(col_breaks,tmp_range)
-}
-
 ### save figure
 pdf(cREs_IDEASpro_outfile, 16, 16)
 barplot(counts_matrix_t, col=my_colorbar)
