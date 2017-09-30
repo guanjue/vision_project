@@ -42,8 +42,8 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
 
 	### get cell type average matrix
 	echo 'get cell type average matrix'
-	time python $script_folder'index_set/merge_cell_type_data.py' -i $index_set_dir'homerTable3.peaks.filtered.binary_pattern.txt' -o $index_set_dir'celltype.binary_pattern.txt'
-	time python $script_folder'index_set/merge_cell_type_data.py' -i $index_set_dir'homerTable3.peaks.filtered.signal.txt' -o $index_set_dir'celltype.signal.txt'
+	time python $script_folder'index_set/merge_cell_type_data.py' -i $index_set_dir'homerTable3.peaks.filtered.binary_pattern.txt' -m $input_folder'sample2celltype.txt' -n 2 -o $index_set_dir'celltype.binary_pattern.txt'
+	time python $script_folder'index_set/merge_cell_type_data.py' -i $index_set_dir'homerTable3.peaks.filtered.signal.txt' -m $input_folder'sample2celltype.txt' -n 2 -o $index_set_dir'celltype.signal.txt'
 
 	### get index sets (CORE!!!)
 	echo 'get index sets (CORE!!!)'

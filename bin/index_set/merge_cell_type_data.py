@@ -22,56 +22,51 @@ def write2d_array(array,output):
 		r1.write(str(records[len(records)-1])+'\n')
 	r1.close()
 ################################################################################################
-def merge_cell_type_data(inputfile, outputfile):
+### sample2matrix
+def sample2matrix(signal_matrix, col_header, sample2celltype_matrix, sample_size):
+	### initiate header vector & signal matrix
+	cellytpe_merge_matrix_header = []
+	cellytpe_merge_matrix_data = np.array([], dtype=np.float).reshape(0, signal_matrix.shape[0])
+
+	### merge sample based on sample2celltype_matrix
+	for i in range(0, sample2celltype_matrix.shape[0]):
+		### column header
+		tmp_header = col_header[int(sample2celltype_matrix[i, 1])].split('_')[0]
+
+		### average column signal
+		tmp_sig = signal_matrix[:,int(sample2celltype_matrix[i, 1])]
+		for j in range(1,sample_size):
+			tmp_sig = tmp_sig + signal_matrix[:,int(sample2celltype_matrix[i, 1+j])]
+		tmp_sig_average = tmp_sig / sample_size
+
+		### append header vector
+		cellytpe_merge_matrix_header = cellytpe_merge_matrix_header + [ tmp_header ]
+		### append signal data matrix
+		cellytpe_merge_matrix_data = np.concatenate((cellytpe_merge_matrix_data, [tmp_sig_average]), axis=0)
+
+	### transpose data matrix
+	cellytpe_merge_matrix_data = np.transpose(cellytpe_merge_matrix_data)
+	### reshape header 
+	cellytpe_merge_matrix_header = np.array([cellytpe_merge_matrix_header])
+
+	### add column header to data matrix
+	cellytpe_merge_matrix_info = np.concatenate((cellytpe_merge_matrix_header, cellytpe_merge_matrix_data), axis=0)
+	
+	return cellytpe_merge_matrix_info
+
+################################################################################################
+def merge_cell_type_data(inputfile, sample2celltype, sample_size, outputfile):
 	data0 = read2d_array(inputfile,str)
 	### get cell type sample names (column header)
 	header = data0[0,1:]
 	data0_id = np.transpose([data0[:,0]])
 	data0_signal = np.array(data0[1:,1:], dtype=float)
 
-	### get cell header split by '_' (remove sample id)
-	lsk_header = [header[0].split('_')[0]]
-	cmp_header = [header[3].split('_')[0]]
-	gmp_header = [header[5].split('_')[0]]
-	mep_header = [header[7].split('_')[0]]
-	cfue_header = [header[9].split('_')[0]]
-	ery_header = [header[11].split('_')[0]]
-	cfumk_header = [header[13].split('_')[0]]
-	meg_header = [header[15].split('_')[0]]
-	mono_header = [header[17].split('_')[0]]
-	neu_header = [header[19].split('_')[0]]
-	b_header = [header[20].split('_')[0]]
-	nk_header = [header[21].split('_')[0]]
-	tcd4_header = [header[22].split('_')[0]]
-	tcd8_header = [header[23].split('_')[0]]
-	g1e_header = [header[24].split('_')[0]]
-	er4_header = [header[26].split('_')[0]]
+	### read sample2celltype_matrix
+	sample2celltype_matrix = read2d_array(sample2celltype,str)
 
-	cellytpe_merge_matrix_header = np.array( ([lsk_header + cmp_header + gmp_header + mep_header + cfue_header + ery_header + cfumk_header + meg_header + mono_header + neu_header + b_header + nk_header + tcd4_header + tcd8_header + g1e_header + er4_header]) )
-	
-	### get cell average
-	lsk = np.array([(data0_signal[:,0] + data0_signal[:,1])/2])
-	cmp = np.array([(data0_signal[:,2] + data0_signal[:,3])/2])
-	gmp = np.array([(data0_signal[:,4] + data0_signal[:,5])/2])
-	mep = np.array([(data0_signal[:,6] + data0_signal[:,7])/2])
-	cfue = np.array([(data0_signal[:,8] + data0_signal[:,9])/2])
-	ery = np.array([(data0_signal[:,10] + data0_signal[:,11])/2])
-	cfumk = np.array([(data0_signal[:,12] + data0_signal[:,13])/2])
-	meg = np.array([(data0_signal[:,14] + data0_signal[:,15])/2])
-	mono = np.array([(data0_signal[:,16] + data0_signal[:,17])/2])
-	neu = np.array([(data0_signal[:,18] + data0_signal[:,19])/2])
-	b = np.array([data0_signal[:,20]])
-	nk = np.array([data0_signal[:,21]])
-	tcd4 = np.array([data0_signal[:,22]])
-	tcd8 = np.array([data0_signal[:,23]])
-	g1e = np.array([(data0_signal[:,24] + data0_signal[:,25])/2])
-	er4 = np.array([(data0_signal[:,26] + data0_signal[:,27])/2])
-
-	### merge columns
-	cellytpe_merge_matrix_data = np.transpose(np.concatenate((lsk, cmp, gmp, mep, cfue, ery, cfumk, meg, mono, neu, b, nk, tcd4, tcd8, g1e, er4), axis=0))
-	
-	### add column header
-	cellytpe_merge_matrix_info = np.concatenate((cellytpe_merge_matrix_header, cellytpe_merge_matrix_data), axis=0)
+	### get sample2matrix
+	cellytpe_merge_matrix_info = sample2matrix(data0_signal, header, sample2celltype_matrix, sample_size)
 	
 	### add DNA region ID
 	cellytpe_merge_matrix = np.concatenate((data0_id, cellytpe_merge_matrix_info), axis=1)
@@ -81,27 +76,31 @@ def merge_cell_type_data(inputfile, outputfile):
 
 
 ############################################################################
-#time python merge_cell_type_data.py -i homerTable3.peaks.filtered.binary_pattern.txt -o celltype.binary_pattern.txt
+#time python merge_cell_type_data.py -i homerTable3.peaks.filtered.binary_pattern.txt -m sample2celltype.txt -n 2 -o celltype.binary_pattern.txt
 
 import getopt
 import sys
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"hi:o:")
+		opts, args = getopt.getopt(argv,"hi:m:n:o:")
 	except getopt.GetoptError:
-		print 'time python merge_cell_type_data.py -i inputfile -a output1 -o outputfile'
+		print 'time python merge_cell_type_data.py -i inputfile -m sample2celltype -n sample_size -o outputfile'
 		sys.exit(2)
 
 	for opt,arg in opts:
 		if opt=="-h":
-			print 'time python merge_cell_type_data.py -i inputfile -a output1 -o outputfile'
+			print 'time python merge_cell_type_data.py -i inputfile -m sample2celltype -n sample_size -o outputfile'
 			sys.exit()
 		elif opt=="-i":
 			inputfile=str(arg.strip())
+		elif opt=="-m":
+			sample2celltype=str(arg.strip())
+		elif opt=="-n":
+			sample_size=int(arg.strip())
 		elif opt=="-o":
 			outputfile=str(arg.strip())
 
-	merge_cell_type_data(inputfile, outputfile)
+	merge_cell_type_data(inputfile, sample2celltype, sample_size, outputfile)
 
 if __name__=="__main__":
 	main(sys.argv[1:])
