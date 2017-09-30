@@ -1,0 +1,17 @@
+0	repressed
+1	repressed
+2	low_signal
+3	repressed
+4	repressed
+5	repressed
+6	repressed
+7	repressed
+8	enhancer_like_medium_signal
+9	elongating_transcription
+10	quiescent
+11	low_signal
+12	enhancer_like_active_k27ac
+13	enhancer_like_low_signal
+14	ctcf_and_or_enhancer_like
+15	atac_only
+16	promoter_like

@@ -7,8 +7,12 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 ### get 5p end reads count per DNA region
 echo 'get 5p end reads count per DNA region'
 # run in server (biostar)
+# time bash /gpfs/home/gzx103/scratch/vision_clustering/get_reads_count_matrix_0913.sh
 # time bash get_5p_matrix/get_reads_count_matrix_0913.sh
-# bam file location: bam_file.txt
+
+# bam file location: /gpfs/home/gzx103/scratch/vision_clustering/bam_file.txt
+# bam file location: list_file_example/bam_file.txt
+
 # peak file: homerTable3.peaks.filtered.bed
 # output read count matrix: reads_count_matrix_5end.txt
 
