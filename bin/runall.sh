@@ -1,5 +1,7 @@
 ##################################
 script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
+index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/index_caller/index_caller/bin/'
+
 ##################################
 	###### initiate folders
 	input_folder='input_data/'
@@ -50,7 +52,12 @@ script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
 	### plot index set
 	echo 'plot index set'
 	time Rscript $script_folder'figures/plot_index_set_region_hist.R' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_hist.pdf' $index_set_figure_dir'index_hist_noxlim.pdf'
-	time Rscript $script_folder'figures/plot_index_set_module.R' $index_set_dir'celltype.index_set.sorted.txt' $index_set_dir'celltype.index.sorted.txt' black 200 $index_set_figure_dir'index_set_all.pdf' $index_set_figure_dir'index_set_thresh.pdf' $index_set_figure_dir'index.png' black
+	time Rscript $script_folder'figures/plot_index_set_module.R' $index_set_dir'celltype.index_set.sorted.txt' $index_set_dir'celltype.index.sorted.txt' $index_set_dir'celltype.index_set_filtered.sorted.txt' $index_set_figure_dir'index_set_all.pdf' $index_set_figure_dir'index_set_thresh.pdf' $index_set_figure_dir'index.png' 200 black
+
+##################################
+### get input signal (tpm & rpkm) matrix
+	echo 'get input signal (tpm & rpkm) matrix'
+	#time bash run_get_input_matrices.sh
 
 ##################################
 	######## homer signal
