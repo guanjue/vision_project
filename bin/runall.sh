@@ -66,7 +66,7 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
 	time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t $index_set_dir'celltype.signal.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -q 75 -o $index_set_sig_dir'celltype.index.signal.sorted.txt' -p $index_set_sig_dir'celltype.index_set.signal.sorted.txt'
 	### filter the original matrix to 210k matrix
 	echo 'filter the original matrix to 210k matrix'
-	time python $script_folder'sort_matrix/vlookup.py' -t $input_folder'homerTable3.peaks.filtered.txt' -m 4 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $input_folder'homerTable3.peaks.filtered.210k.txt' -k F
+	time python $script_folder'sort_matrix/vlookup.py' -t $input_folder'homerTable3.peaks.filtered.txt' -m 4 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $input_folder'homerTable3.peaks.filtered.interval.210k.txt' -k F
 	### plot index set signal
 	echo 'plot index set signal'
 	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.signal.sorted.txt' $index_set_sig_dir'celltype.index.signal.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_signal_all.pdf' $index_set_figure_dir'index_set_signal_thresh.pdf' $index_set_figure_dir'index_signal.png' red 200 0.99 log2
@@ -77,7 +77,7 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
 
 	######## DNA region TPM
 	echo 'get cell type average matrix'
-	time python $script_folder'index_set/merge_cell_type_data.py' -i $input_folder'homerTable3.peaks.filtered.tpm.txt' -o $index_set_dir'celltype.tpm.txt'
+	time python $script_folder'index_set/merge_cell_type_data.py' -i $input_folder'homerTable3.peaks.filtered.tpm.txt' -m $input_folder'sample2celltype.txt' -n 2 -o $index_set_dir'celltype.tpm.txt'
 	### tpm matrix sort
 	echo 'tpm matrix sort'
 	time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t $index_set_dir'celltype.tpm.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -q 75 -o $index_set_sig_dir'celltype.index.tpm.sorted.txt' -p $index_set_sig_dir'celltype.index_set.tpm.sorted.txt'
@@ -90,7 +90,7 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
 
 	######## DNA region RPKM
 	echo 'get cell type average matrix'
-	time python $script_folder'index_set/merge_cell_type_data.py' -i $input_folder'homerTable3.peaks.filtered.rpkm.txt' -o $index_set_dir'celltype.rpkm.txt'
+	time python $script_folder'index_set/merge_cell_type_data.py' -i $input_folder'homerTable3.peaks.filtered.rpkm.txt' -m $input_folder'sample2celltype.txt' -n 2 -o $index_set_dir'celltype.rpkm.txt'
 	### RPKM matrix sort
 	echo 'RPKM matrix sort'
 	time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t $index_set_dir'celltype.rpkm.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -q 75 -o $index_set_sig_dir'celltype.index.rpkm.sorted.txt' -p $index_set_sig_dir'celltype.index_set.rpkm.sorted.txt'
