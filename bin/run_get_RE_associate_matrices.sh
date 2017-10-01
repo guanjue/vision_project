@@ -10,7 +10,7 @@ tail -n+2 'input_data/homerTable3.peaks.filtered.interval.210k.txt' | awk -F '\t
 ### get 210k DNA region bed file (index sorted)
 tail -n+2 'input_data/homerTable3.peaks.filtered.interval.210k.txt' > 'ideas_bb/DNA_regin_210k_indexsort.bed'
 ### get 210k DNA region bed file (index sorted) only intervals
-tail -n+2 'input_data/homerTable3.peaks.filtered.interval.210k.txt' > 'ideas_bb/DNA_regin_210k_indexsort_onlyinterval.bed'
+tail -n+2 'input_data/homerTable3.peaks.filtered.interval.210k.txt' > 'ideas_bb/DNA_regin_210k_indexsort_onlyinterval.txt'
 
 
 while read LINE
