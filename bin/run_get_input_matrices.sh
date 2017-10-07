@@ -20,6 +20,7 @@ echo 'get 5p end reads count per DNA region'
 ### prepare TPM matrix
 echo 'calculate tpm'
 time python $script_folder'get_5p_matrix/reads_count_tpm.py' -i 'input_data/reads_count_matrix_5end.txt' -o 'input_data/reads_count_matrix_5end_tpm.txt'
+time python $script_folder'get_5p_matrix/reads_count_tpm.py' -i 'input_data/reads_count_matrix_5end_whole_genome.txt' -o 'input_data/reads_count_matrix_5end_whole_genome_tpm.txt'
 
 ### cell type sorting (column sorting)
 echo 'sort tpm column order (come from bam file name sort order) by homerTable3.peaks.filtered.txt column order'
