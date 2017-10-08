@@ -71,10 +71,18 @@ cd $analysis_folder
 	### merge rsem sample matrix to cell type matrix
 	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $rsem_matrix_folder'rsem_matrix.txt' -m $input_folder'rsem_list_sample2celltype.txt' -n 6 -o $rsem_matrix_folder'rsem_matrix.celltype.txt'
 
+	### sort columns without merge cell types
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $rsem_matrix_folder'rsem_matrix.txt' -m $input_folder'rsem_list_sample2sortsample.txt' -n 6 -o $rsem_matrix_folder'rsem_matrix.sortsample.txt'
 
 ###### normalize the rsem relative to CMP
 	### quantile normalization
 	time python $script_folder'rna_matrix/quantile_normalization.py' -i $rsem_matrix_folder'rsem_matrix.celltype.txt' -n 6 -o $rsem_matrix_folder'rsem_matrix.celltype.qn.txt'
 
 	### DEseq2 normalization
+	time Rscript $script_folder'rna_matrix/DEseq2_norm.R' $rsem_matrix_folder'rsem_matrix.txt' $input_folder'rsem_list_sample_col.txt' $rsem_matrix_folder'rsem_matrix.norm'
+
+	### merge normed rsem sample matrix to cell type matrix
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.txt' -m $input_folder'rsem_list_sample2celltype.txt' -n 6 -o $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.txt'
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $rsem_matrix_folder'rsem_matrix.norm.log2_norm_matrix_plus1.txt' -m $input_folder'rsem_list_sample2celltype.txt' -n 6 -o $rsem_matrix_folder'rsem_matrix.norm.log2_norm_matrix_plus1.celltype.txt'
+
 
