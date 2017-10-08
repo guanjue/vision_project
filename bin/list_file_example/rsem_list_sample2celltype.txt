@@ -1,0 +1,12 @@
+lsk	12	13
+cmp	4	5
+gmp	10	11
+mep	14	15
+cfue	0	1
+ery	19	20
+cfumk	2	3
+meg	21	22
+mono	16	17	18
+neu	23	24
+g1e	8	9
+er4	6	7
