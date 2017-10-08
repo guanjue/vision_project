@@ -75,15 +75,16 @@ def merge_cell_type_data(inputfile, sig_col, sample2celltype, outputfile):
 
 	### get row info & add header
 	data0_info = np.array([range(0, sig_col-1)])
+	print(data0_info)
 	data0_info_tmp = data0[:,0:sig_col-1]
 	data0_info = np.concatenate((data0_info, data0_info_tmp), axis = 0)
-
+	print(data0_info)
 	### extract sample signal matrix
 	data0_signal = np.array(data0[:,sig_col-1:], dtype=float)
-
+	print(data0_signal.shape)
 	### read sample2celltype_list
 	sample2celltype_list = read2d_list(sample2celltype, str)
-
+	print(sample2celltype_list)
 	### get cell type sample names (column header)
 	header = []
 	for i in range(0, len(sample2celltype_list)):

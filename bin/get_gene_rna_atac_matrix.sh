@@ -1,6 +1,6 @@
 ##################################
 script_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/bin/'
-analysis_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/rnaseq/'
+analysis_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/gene_rnaseq_atac/'
 ##################################
 	###### initiate folders
 	gene_list='gene_list/'
@@ -8,6 +8,8 @@ analysis_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/rnaseq/'
 	rsem_sort_folder='rsem_sort/'
 	rsem_matrix_folder='rsem_matrix_folder/'
 	input_folder='input_folder/'
+	gene_atac='gene_atac/'
+
 
 	if [ -d "$rsem_sort" ]; then  
 		rm -r $rsem_sort
@@ -84,5 +86,13 @@ cd $analysis_folder
 	### merge normed rsem sample matrix to cell type matrix
 	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.txt' -m $input_folder'rsem_list_sample2celltype.txt' -n 6 -o $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.txt'
 	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $rsem_matrix_folder'rsem_matrix.norm.log2_norm_matrix_plus1.txt' -m $input_folder'rsem_list_sample2celltype.txt' -n 6 -o $rsem_matrix_folder'rsem_matrix.norm.log2_norm_matrix_plus1.celltype.txt'
+
+
+###### gene atac
+	### merge normed rsem sample matrix to cell type matrix
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.atac.celltype.txt'
+
+	### merge normed rsem sample matrix to cell type matrix
+	time python $script_folder'rna_matrix/vlookup_bed.py' -t $gene_atac'gencode_pc_sort.atac.celltype.txt' -s $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.txt' -o $gene_atac'gencode_pc_sort.atac.celltype.matched.txt' -k F
 
 
