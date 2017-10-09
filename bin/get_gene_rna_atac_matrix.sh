@@ -11,6 +11,9 @@ analysis_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/gene_rnaseq_ata
 	gene_atac='gene_atac/'
 	atac_ncis_table='atac_ncis_table/'
 	atac_ncis_table_plot='atac_ncis_table_plot/'
+	scale_factor_matrix='scale_factor_matrix/'
+	atac_reads_table='atac_reads_table/'
+
 
 	if [ -d "$rsem_sort" ]; then  
 		rm -r $rsem_sort
@@ -26,6 +29,11 @@ analysis_folder='/Volumes/MAC_Data/data/labs/hardison_lab/vision/gene_rnaseq_ata
 		rm -r $atac_ncis_table_plot
 	fi
 	mkdir $atac_ncis_table_plot
+
+	if [ -d "$scale_factor_matrix" ]; then  
+		rm -r $scale_factor_matrix
+	fi
+	mkdir $scale_factor_matrix
 
 ### go to folder
 cd $analysis_folder
@@ -104,9 +112,8 @@ cd $analysis_folder
 
 ###### atac NCIS norm
 	### get the NCIS R VS T pattern variance change-point
-	time Rscript $script_folder'gene_atac/ncis_change_point.R' $input_folder'ncis_table_list.txt' $atac_ncis_table $atac_ncis_table_plot BinSeg
+	time Rscript $script_folder'gene_atac/ncis_change_point.R' $input_folder'ncis_table_list.txt' $scale_factor_matrix'ncis_table_list.t_thresh.txt' $atac_ncis_table $atac_ncis_table_plot BinSeg
 
 	### get scale factor table
-	time python $script_folder'rna_matrix/vlookup_bed.py' -t $gene_atac'gencode_pc_sort.atac.celltype.txt' -s $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.txt' -o $gene_atac'gencode_pc_sort.atac.celltype.matched.txt' -k F
-
+	time Rscript $script_folder'gene_atac/ncis_scale_factor_matrix.R' $scale_factor_matrix'ncis_table_list.t_thresh.txt' $scale_factor_matrix'ncis_table_list.sf.txt' $atac_reads_table $atac_ncis_table_plot 500000 T
 

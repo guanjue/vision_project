@@ -4,15 +4,17 @@ library(changepoint)
 ### get parameters
 args = commandArgs(trailingOnly=TRUE)
 ncis_table_list_file = args[1]
-input_folder = args[2]
-output_folder = args[3]
+t_thresh_output_file = args[2]
 
-changepoint_method = args[4]
+input_folder = args[3]
+output_folder = args[4]
+
+changepoint_method = args[5]
 
 ### read ncis table file names
 ncis_table_list = read.table(ncis_table_list_file, header=FALSE)
 
-###
+### initialize t table
 t_thresh = c()
 
 for (i in c(1:dim(ncis_table_list)[1])){
@@ -72,5 +74,5 @@ for (i in c(1:dim(ncis_table_list)[1])){
 
 ### write t_thresh table
 t_thresh = cbind(ncis_table_list, t_thresh )
-write.table(t_thresh, paste(output_folder, output_name, '.txt', sep =''), quote=FALSE, col.names=FALSE, row.names=FALSE, sep='\t')
+write.table(t_thresh, t_thresh_output_file, quote=FALSE, col.names=FALSE, row.names=FALSE, sep='\t')
 
