@@ -79,10 +79,10 @@ for (i in c(1:dim(ncis_table_list)[1])){
 				}
 
 			### get scale factor log scale
-			sf = merge_x / merge_y
+			sf = merge_y / merge_x
 
 			### normalize y value
-			data_y = data_y * sf
+			data_x = data_x * sf
 
 			### get std
 			std_x = sd(data_x)
