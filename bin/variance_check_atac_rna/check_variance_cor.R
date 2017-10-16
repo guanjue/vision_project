@@ -1,80 +1,536 @@
 library(LSD)
-data_atac = read.table('gene_atac/gencode_pc_sort.atac.celltype.matched.txt', header = T, sep='\t')
+data_atac = read.table('gene_atac/gencode_pc_sort.TSSexp10kb.atac.celltype.matched.txt', header = T, sep='\t')
+data_atac_tr = read.table('gene_atac/gencode_pc_sort.TSSexp10kb.atac.celltype.matched.TRnormed.txt', header = T, sep='\t')
+data_atac1kb = read.table('gene_atac/gencode_pc_sort.TSSexp1kb.atac.celltype.matched.txt', header = T, sep='\t')
+data_atac5kb = read.table('gene_atac/gencode_pc_sort.TSSexp5kb.atac.celltype.matched.txt', header = T, sep='\t')
+data_atac10kb = read.table('gene_atac/gencode_pc_sort.TSSexp10kb.atac.celltype.matched.txt', header = T, sep='\t')
+data_atac110kb = read.table('gene_atac/gencode_pc_sort.TSSup1000kb.atac.celltype.matched.txt', header = T, sep='\t')
 
 norm_info = read.table('scale_factor_matrix/ncis_table_list.sf.txt')
 
-scale_factor_allmean = norm_info[c(1:12),7]
+scale_factor_allmean = norm_info[c(1:12),11] / norm_info[c(1:12),7]
 
-scale_factor = norm_info[c(1:12),10]
+scale_factor = norm_info[c(1:12),14] / norm_info[c(1:12),10]
 
 
-data_rna = read.table('rsem_matrix_folder/rsem_matrix.norm.rld_matrix.celltype.txt', header = T, sep='\t')
+### rna matrix
+data_rna = read.table('rsem_matrix_folder/rsem_matrix.norm.rld_matrix.celltype.matched.txt', header = F, sep='\t')
 #data_rna = read.table('rsem_matrix_folder/rsem_matrix.norm.log2_norm_matrix_plus1.celltype.txt', header = T, sep='\t')
+data_rna_sig = data_rna[,c(-1,-2,-3,-4,-5,-6)]
 
+### atac matrices
 data_atac_sig = data_atac[,c(-1,-2,-3,-4,-5,-6)]
+data_atac_sig_tr = data_atac_tr[,c(-1,-2,-3,-4,-5,-6)]
+
+data_atac_sig1 = data_atac1kb[,c(-1,-2,-3,-4,-5,-6)]
+data_atac_sig5 = data_atac5kb[,c(-1,-2,-3,-4,-5,-6)]
+data_atac_sig10 = data_atac10kb[,c(-1,-2,-3,-4,-5,-6)]
+data_atac_sig110 = data_atac110kb[,c(-1,-2,-3,-4,-5,-6)]
 
 ### scale factor norm
 data_atac_sig_sf = t(apply(data_atac_sig, 1, FUN=function(x) x*scale_factor))
 data_atac_sig_sf_am = t(apply(data_atac_sig, 1, FUN=function(x) x*scale_factor_allmean))
 
+data_atac_sig_sf1 = t(apply(data_atac_sig1, 1, FUN=function(x) x*scale_factor))
+data_atac_sig_sf_am1 = t(apply(data_atac_sig1, 1, FUN=function(x) x*scale_factor_allmean))
+
+data_atac_sig_sf5 = t(apply(data_atac_sig5, 1, FUN=function(x) x*scale_factor))
+data_atac_sig_sf_am5 = t(apply(data_atac_sig5, 1, FUN=function(x) x*scale_factor_allmean))
+
+data_atac_sig_sf10 = t(apply(data_atac_sig10, 1, FUN=function(x) x*scale_factor))
+data_atac_sig_sf_am10 = t(apply(data_atac_sig10, 1, FUN=function(x) x*scale_factor_allmean))
+
+data_atac_sig_sf110 = t(apply(data_atac_sig110, 1, FUN=function(x) x*scale_factor))
+data_atac_sig_sf_am110 = t(apply(data_atac_sig110, 1, FUN=function(x) x*scale_factor_allmean))
+
+
 ### sd norm
 #col_sd = apply(data_atac_sig_sf, 2, sd)
 #data_atac_sig_sf_sd = t(apply(data_atac_sig_sf, 1, FUN=function(x) x/col_sd))
-data_atac_sig_sf_sd = data_atac_sig_sf_sd#*5000
-data_atac_sig_sf_sd_am = data_atac_sig_sf_am#*5000
-colnames(data_atac_sig_sf_sd) = colnames(data_atac_sig)
-colnames(data_atac_sig_sf_sd_am) = colnames(data_atac_sig)
+
+sd_scale = norm_info[c(1:12),22] / norm_info[c(1:12),18]
+sd_scale_am = norm_info[c(1:12),19] / norm_info[c(1:12),15]
+
+#sd1=apply(data_atac_sig_sf,2,sd)
+
+
+#data_atac_sig_sf_sd = t(apply(data_atac_sig_sf, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
+#data_atac_sig_sf_sd_am = t(apply(data_atac_sig_sf_am, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
+
+data_atac_sig_sf_sd1 = t(apply(data_atac_sig_sf1, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
+data_atac_sig_sf_sd_am1 = t(apply(data_atac_sig_sf_am1, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
+data_atac_sig_sf_sd5 = t(apply(data_atac_sig_sf5, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
+data_atac_sig_sf_sd_am5 = t(apply(data_atac_sig_sf_am5, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
+data_atac_sig_sf_sd10 = t(apply(data_atac_sig_sf10, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
+data_atac_sig_sf_sd_am10 = t(apply(data_atac_sig_sf_am10, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
+data_atac_sig_sf_sd110 = t(apply(data_atac_sig_sf110, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
+data_atac_sig_sf_sd_am110 = t(apply(data_atac_sig_sf_am110, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
 
 
 ###### input matrix
 ### od log2
 data_atac_sig_log2 = log2(data_atac_sig+1)
+data_atac_sig_log2_tr = log2(data_atac_sig_tr+1)
+
 ### scale log2
-data_atac_sig_scale_log2 = scale(log2(data_atac_sig_sf_sd_am+1))
+#data_atac_sig_sf_am_log2 = log2(data_atac_sig_sf_am+1)
 ### sf_sd_norm log2
-data_atac_sig_sf_sd_log2 = log2(data_atac_sig_sf_sd+1)
-### rna matrix
-data_rna_sig = data_rna[,c(-1,-2,-3,-4,-5)]
+#data_atac_sig_sf_log2 = log2(data_atac_sig_sf+1)
+
+### scale log2
+data_atac_sig_sf_am_log2_1 = log2((data_atac_sig_sf_am1+1)/1000*1000)
+### sf_sd_norm log2
+data_atac_sig_sf_log2_1 = log2((data_atac_sig_sf1+1)/1000*1000)
+### scale log2
+data_atac_sig_sf_am_log2_5 = log2((data_atac_sig_sf_am5+1)/5000*1000)
+### sf_sd_norm log2
+data_atac_sig_sf_log2_5 = log2((data_atac_sig_sf5+1)/5000*1000)
+### scale log2
+data_atac_sig_sf_am_log2_10 = log2((data_atac_sig_sf_am10+1)/10000*1000)
+### sf_sd_norm log2
+data_atac_sig_sf_log2_10 = log2((data_atac_sig_sf10+1)/10000*1000)
+### scale log2
+data_atac_sig_sf_am_log2_110 = log2((data_atac_sig_sf_am110+1)/100000*1000)
+### sf_sd_norm log2
+data_atac_sig_sf_log2_110 = log2((data_atac_sig_sf110+1)/100000*1000)
+
+
+
+data_atac_sig_var = apply(data_atac_sig_log2, 1, var)
+data_atac_sig_var_tr = apply(data_atac_sig_log2_tr, 1, var)
+data_atac_sig_sf_am_log2_10_var = apply(data_atac_sig_sf_am_log2_10, 1, var)
+data_atac_sig_sf_log2_10_var = apply(data_atac_sig_sf_log2_10, 1, var)
+data_rna_sig_var = apply(data_rna_sig, 1, var)
+
+
+png('norm_compare/variance.png')
+par(mfrow=c(2,2))
+heatscatter((data_atac_sig_var), log(data_rna_sig_var), pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
+heatscatter((data_atac_sig_var_tr), log(data_rna_sig_var), pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
+heatscatter((data_atac_sig_sf_am_log2_10_var), log(data_rna_sig_var), pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
+heatscatter((data_atac_sig_sf_log2_10_var), log(data_rna_sig_var), pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
+dev.off()
+
+png('norm_compare/variance_high.png')
+par(mfrow=c(2,2))
+heatscatter((data_atac_sig_var)[log(data_rna_sig_var)>-5], log(data_rna_sig_var)[log(data_rna_sig_var)>-5], pch = 20, xlim=c(0, 3), ylim=c(-5, 5))
+heatscatter((data_atac_sig_var_tr)[log(data_rna_sig_var)>-5], log(data_rna_sig_var)[log(data_rna_sig_var)>-5], pch = 20, xlim=c(0, 3), ylim=c(-5, 5))
+heatscatter((data_atac_sig_sf_am_log2_10_var)[log(data_rna_sig_var)>-5], log(data_rna_sig_var)[log(data_rna_sig_var)>-5], pch = 20, xlim=c(0, 3), ylim=c(-5, 5))
+heatscatter((data_atac_sig_sf_log2_10_var)[log(data_rna_sig_var)>-5], log(data_rna_sig_var)[log(data_rna_sig_var)>-5], pch = 20, xlim=c(0, 3), ylim=c(-5, 5))
+dev.off()
+
+
+
+### spearman correlation
+data_atac_rna_sig_cor = apply(cbind(data_atac_sig_log2, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+data_atac_rna_sig_cor_tr = apply(cbind(data_atac_sig_log2_tr, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+
+#data_atac_sf_sd_am_rna_sig_cor = apply(cbind(data_atac_sig_sf_am_log2, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+#data_atac_sf_sd_rna_sig_cor = apply(cbind(data_atac_sig_sf_log2, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+
+data_atac_sf_sd_am_rna_sig_cor1 = apply(cbind(data_atac_sig_sf_am_log2_1, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+data_atac_sf_sd_rna_sig_cor1 = apply(cbind(data_atac_sig_sf_log2_1, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+
+data_atac_sf_sd_am_rna_sig_cor5 = apply(cbind(data_atac_sig_sf_am_log2_5, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+data_atac_sf_sd_rna_sig_cor5 = apply(cbind(data_atac_sig_sf_log2_5, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+
+data_atac_sf_sd_am_rna_sig_cor10 = apply(cbind(data_atac_sig_sf_am_log2_10, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+data_atac_sf_sd_rna_sig_cor10 = apply(cbind(data_atac_sig_sf_log2_10, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+
+data_atac_sf_sd_am_rna_sig_cor110 = apply(cbind(data_atac_sig_sf_am_log2_110, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+data_atac_sf_sd_rna_sig_cor110 = apply(cbind(data_atac_sig_sf_log2_110, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+
+### spearman correlation
+#data_atac_rna_sig_cor = apply(cbind(data_atac_sig_log2, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+#data_atac_rna_sig_cor_tr = apply(cbind(data_atac_sig_log2_tr, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+
+#data_atac_sf_sd_am_rna_sig_cor = apply(cbind(data_atac_sig_sf_am_log2, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+#data_atac_sf_sd_rna_sig_cor = apply(cbind(data_atac_sig_sf_log2, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+
+#data_atac_sf_sd_am_rna_sig_cor1 = apply(cbind(data_atac_sig_sf_am_log2_1, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+#data_atac_sf_sd_rna_sig_cor1 = apply(cbind(data_atac_sig_sf_log2_1, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+
+#data_atac_sf_sd_am_rna_sig_cor5 = apply(cbind(data_atac_sig_sf_am_log2_5, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+#data_atac_sf_sd_rna_sig_cor5 = apply(cbind(data_atac_sig_sf_log2_5, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+
+#data_atac_sf_sd_am_rna_sig_cor10 = apply(cbind(data_atac_sig_sf_am_log2_10, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+#data_atac_sf_sd_rna_sig_cor10 = apply(cbind(data_atac_sig_sf_log2_10, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+
+#data_atac_sf_sd_am_rna_sig_cor110 = apply(cbind(data_atac_sig_sf_am_log2_110, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+#data_atac_sf_sd_rna_sig_cor110 = apply(cbind(data_atac_sig_sf_log2_110, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+
+
+
+print('correlation summary: ')
+summary((data_atac_rna_sig_cor))
+summary((data_atac_rna_sig_cor_tr))
+
+summary((data_atac_sf_sd_am_rna_sig_cor1))
+summary((data_atac_sf_sd_rna_sig_cor1))
+
+summary((data_atac_sf_sd_am_rna_sig_cor5))
+summary((data_atac_sf_sd_rna_sig_cor5))
+
+summary((data_atac_sf_sd_am_rna_sig_cor10))
+summary((data_atac_sf_sd_rna_sig_cor10))
+
+summary((data_atac_sf_sd_am_rna_sig_cor110))
+summary((data_atac_sf_sd_rna_sig_cor110))
+
+png('norm_compare/spearman_corr.png')
+par(mfrow=c(2,2))
+plot(density((data_atac_rna_sig_cor[!is.na(data_atac_rna_sig_cor)])), ylim=c(0,2.5), main='original atac signal TSS 10 kb')
+abline(v=0, lty=2)
+plot(density((data_atac_rna_sig_cor_tr[!is.na(data_atac_rna_sig_cor_tr)])), ylim=c(0,2.5), main='TR norm atac signal TSS 10 kb')
+abline(v=0, lty=2)
+#plot(density((data_atac_sf_sd_am_rna_sig_cor[!is.na(data_atac_sf_sd_am_rna_sig_cor)])), ylim=c(0,2.5), col='red')
+plot(density((data_atac_sf_sd_am_rna_sig_cor1[!is.na(data_atac_sf_sd_am_rna_sig_cor1)])), ylim=c(0,2.5), col='yellow', main='Total mean norm atac signal TSS 10 kb')
+abline(v=0, lty=2)
+lines(density((data_atac_sf_sd_am_rna_sig_cor5[!is.na(data_atac_sf_sd_am_rna_sig_cor5)])), ylim=c(0,2.5), col='green')
+lines(density((data_atac_sf_sd_am_rna_sig_cor10[!is.na(data_atac_sf_sd_am_rna_sig_cor10)])), ylim=c(0,2.5), col='blue')
+lines(density((data_atac_sf_sd_am_rna_sig_cor110[!is.na(data_atac_sf_sd_am_rna_sig_cor110)])), ylim=c(0,2.5), col='gray')
+#plot(density((data_atac_sf_sd_rna_sig_cor[!is.na(data_atac_sf_sd_rna_sig_cor)])), ylim=c(0,2.5), col='red')
+plot(density((data_atac_sf_sd_rna_sig_cor1[!is.na(data_atac_sf_sd_rna_sig_cor1)])), ylim=c(0,2.5), col='yellow', main='Both signal mean norm atac signal TSS 10 kb')
+abline(v=0, lty=2)
+lines(density((data_atac_sf_sd_rna_sig_cor5[!is.na(data_atac_sf_sd_rna_sig_cor5)])), ylim=c(0,2.5), col='green')
+lines(density((data_atac_sf_sd_rna_sig_cor10[!is.na(data_atac_sf_sd_rna_sig_cor10)])), ylim=c(0,2.5), col='blue')
+lines(density((data_atac_sf_sd_rna_sig_cor110[!is.na(data_atac_sf_sd_rna_sig_cor110)])), ylim=c(0,2.5), col='gray')
+dev.off()
+
+print(colnames(data_atac_sig_log2))
+print(colnames(data_rna_sig))
+
+
+for (i in c(1:12)){
+	png(paste('norm_compare/linear/scatterplot_',toString(i),'.png',sep=''))
+	par(mfrow=c(2,2))
+	heatscatter(data_atac_sig[,i], data_rna_sig[,i], pch = 20, ylim=c(-5,15), xlim=c(-5,5000), main=colnames(data_atac_sig_log2)[i])
+	abline(0,1)
+	heatscatter(data_atac_sig_tr[,i], data_rna_sig[,i], pch = 20, ylim=c(-5,15), xlim=c(-5,5000), main=colnames(data_atac_sig_log2)[i])
+	abline(0,1)
+	heatscatter((data_atac_sig_sf_am10[,i]), data_rna_sig[,i], pch = 20, ylim=c(-5,15), xlim=c(-5,5000), main=colnames(data_atac_sig_log2)[i])
+	abline(0,1)
+	heatscatter((data_atac_sig_sf10[,i]), data_rna_sig[,i], pch = 20, ylim=c(-5,15), xlim=c(-5,5000), main=colnames(data_atac_sig_log2)[i])
+	abline(0,1)
+	dev.off()
+}
+
+
+
+for (i in c(1:12)){
+	png(paste('norm_compare/log2/scatterplot_log2_',toString(i),'.png',sep=''))
+	par(mfrow=c(2,2))
+	heatscatter(data_atac_sig_log2[,i], data_rna_sig[,i], pch = 20, ylim=c(-5,15), xlim=c(-5,15), main=colnames(data_atac_sig_log2)[i])
+	abline(0,1)
+	heatscatter(data_atac_sig_log2_tr[,i], data_rna_sig[,i], pch = 20, ylim=c(-5,15), xlim=c(-5,15), main=colnames(data_atac_sig_log2)[i])
+	abline(0,1)
+	heatscatter((data_atac_sig_sf_am_log2_10[,i]), data_rna_sig[,i], pch = 20, ylim=c(-5,15), xlim=c(-5,15), main=colnames(data_atac_sig_log2)[i])
+	abline(0,1)
+	heatscatter((data_atac_sig_sf_log2_10[,i]), data_rna_sig[,i], pch = 20, ylim=c(-5,15), xlim=c(-5,15), main=colnames(data_atac_sig_log2)[i])
+	abline(0,1)
+	dev.off()
+}
+
+'''
+data_atac_rna_sig_cor = apply(cbind(data_atac_sig_log2_sd_norm, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+data_atac_sf_sd_am_rna_sig_cor = apply(cbind(data_atac_sig_sf_am_log2_sd_norm, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+data_atac_sf_sd_rna_sig_cor = apply(cbind(data_atac_sig_sf_log2_sd_norm, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='pearson') )
+
+
+
+summary((data_atac_rna_sig_cor))
+summary((data_atac_sf_sd_am_rna_sig_cor))
+summary((data_atac_sf_sd_rna_sig_cor))
+
+
+
+par(mfrow=c(2,2))
+plot(density((data_atac_rna_sig_cor[!is.na(data_atac_rna_sig_cor)])), ylim=c(0,2.5))
+plot(density((data_atac_sf_sd_am_rna_sig_cor[!is.na(data_atac_sf_sd_am_rna_sig_cor)])), ylim=c(0,2.5))
+plot(density((data_atac_sf_sd_rna_sig_cor[!is.na(data_atac_sf_sd_rna_sig_cor)])), ylim=c(0,2.5))
 
 
 
 
 
-data_atac_sig_log2_cmp = data_atac_sig_log2[,2]
-data_atac_sig_log2_gmp = data_atac_sig_log2[,3]
-data_atac_sig_log2_ery = data_atac_sig_log2[,6]
 
-data_atac_sig_scale_log2_cmp = data_atac_sig_scale_log2[,2]
-data_atac_sig_scale_log2_gmp = data_atac_sig_scale_log2[,3]
-data_atac_sig_scale_log2_ery = data_atac_sig_scale_log2[,6]
 
-data_atac_sig_sf_sd_log2_cmp = data_atac_sig_sf_sd_log2[,2]
-data_atac_sig_sf_sd_log2_gmp = data_atac_sig_sf_sd_log2[,3]
-data_atac_sig_sf_sd_log2_ery = data_atac_sig_sf_sd_log2[,6]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+data_atac_sig_log2_cmp = data_atac_sig_log2_sd_norm[,2]
+data_atac_sig_log2_gmp = data_atac_sig_log2_sd_norm[,3]
+data_atac_sig_log2_ery = data_atac_sig_log2_sd_norm[,6]
+data_atac_sig_log2_g1e = data_atac_sig_log2_sd_norm[,11]
+
+data_atac_sig_scale_log2_cmp = data_atac_sig_sf_am_log2_sd_norm[,2]
+data_atac_sig_scale_log2_gmp = data_atac_sig_sf_am_log2_sd_norm[,3]
+data_atac_sig_scale_log2_ery = data_atac_sig_sf_am_log2_sd_norm[,6]
+data_atac_sig_scale_log2_g1e = data_atac_sig_sf_am_log2_sd_norm[,11]
+
+data_atac_sig_sf_sd_log2_cmp = data_atac_sig_sf_log2_sd_norm[,2]
+data_atac_sig_sf_sd_log2_gmp = data_atac_sig_sf_log2_sd_norm[,3]
+data_atac_sig_sf_sd_log2_ery = data_atac_sig_sf_log2_sd_norm[,6]
+data_atac_sig_sf_sd_log2_g1e = data_atac_sig_sf_log2_sd_norm[,11]
 
 data_rna_sig_cmp = data_rna_sig[,2]
 data_rna_sig_gmp = data_rna_sig[,3]
 data_rna_sig_ery = data_rna_sig[,6]
+data_rna_sig_g1e = data_rna_sig[,11]
 
 
-data_atac_sig_var = apply(data_atac_sig_log2, 1, var)
-data_atac_sig_scale_log2_var = apply(data_atac_sig_scale_log2, 1, var)
-
-data_atac_sig_sf_sd_log2_var = apply(data_atac_sig_sf_sd_log2, 1, var)
+data_atac_sig_var = apply(data_atac_sig_log2_sd_norm, 1, var)
+data_atac_sig_scale_log2_var = apply(data_atac_sig_sf_am_log2_sd_norm, 1, var)
+data_atac_sig_sf_sd_log2_var = apply(data_atac_sig_sf_log2_sd_norm, 1, var)
 data_rna_sig_var = apply(data_rna_sig, 1, var)
 
-data_atac_sig_sd = apply(data_atac_sig_log2, 1, sd)
-data_atac_sig_sf_sd_log2_sd = apply(data_atac_sig_sf_sd_log2, 1, sd)
-data_rna_sig_sd = apply(data_rna_sig, 1, sd)
+
+par(mfrow=c(3,3))
+heatscatter(log(data_atac_sig_var), log(data_rna_sig_var), pch = 20, xlim=c(-8, 2))
+heatscatter(log(data_atac_sig_scale_log2_var), log(data_rna_sig_var), pch = 20, xlim=c(-8, 2))
+heatscatter(log(data_atac_sig_sf_sd_log2_var), log(data_rna_sig_var), pch = 20, xlim=c(-8, 2), ylim=c(-8, 2))
+heatscatter(log(data_atac_sig_sf_sd_log2_var), log(data_atac_sig_var), pch = 20, xlim=c(-8, 2), ylim=c(-8, 2))
+heatscatter(log(data_atac_sig_scale_log2_var), log(data_atac_sig_var), pch = 20, xlim=c(-8, 2), ylim=c(-8, 2))
+
 
 
 par(mfrow=c(2,2))
-heatscatter(data_atac_sig_log2_cmp, data_rna_sig_cmp, pch = 20)
+heatscatter(data_atac_sig_log2_gmp, data_rna_sig_gmp, pch = 20)
 abline(0,1)
-heatscatter(data_atac_sig_scale_log2_cmp, data_rna_sig_cmp, pch = 20)
+heatscatter(data_atac_sig_scale_log2_gmp, data_rna_sig_gmp, pch = 20)
 abline(0,1)
-heatscatter(data_atac_sig_sf_sd_log2_cmp, data_rna_sig_cmp, pch = 20)
+heatscatter(data_atac_sig_sf_sd_log2_gmp, data_rna_sig_gmp, pch = 20)
 abline(0,1)
+
+par(mfrow=c(3,3))
+heatscatter(data_atac_sig_sf_sd_log2_gmp, data_atac_sig_scale_log2_gmp, pch = 20)
+abline(0,1)
+
+heatscatter(data_atac_sig_sf_sd_log2_gmp, data_atac_sig_log2_gmp, pch = 20)
+abline(0,1)
+
+
+heatscatter(data_atac_sig_log2_gmp, data_atac_sig_scale_log2_gmp, pch = 20)
+abline(0,1)
+
+
+
+heatscatter(data_atac_sig_sf_sd_log2_cmp, data_atac_sig_sf_sd_log2_gmp, pch = 20)
+abline(0,1)
+
+heatscatter(data_atac_sig_scale_log2_cmp, data_atac_sig_scale_log2_gmp, pch = 20)
+abline(0,1)
+
+heatscatter(data_atac_sig_log2_cmp, data_atac_sig_log2_gmp, pch = 20)
+abline(0,1)
+
+
+par(mfrow=c(3,3))
+heatscatter(data_atac_sig_sf_sd_log2_cmp, data_atac_sig_sf_sd_log2_ery, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_sf_sd_log2_ery, data_atac_sig_sf_sd_log2_cmp))
+lm_fit = lm(data_atac_sig_sf_sd_log2_ery~data_atac_sig_sf_sd_log2_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_atac_sig_scale_log2_cmp, data_atac_sig_scale_log2_ery, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_scale_log2_ery, data_atac_sig_scale_log2_cmp))
+lm_fit = lm(data_atac_sig_scale_log2_ery~data_atac_sig_scale_log2_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_atac_sig_log2_cmp, data_atac_sig_log2_ery, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_log2_ery, data_atac_sig_log2_cmp))
+lm_fit = lm(data_atac_sig_log2_ery~data_atac_sig_log2_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+heatscatter(data_atac_sig_sf_sd_log2_cmp, data_atac_sig_sf_sd_log2_gmp, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_sf_sd_log2_gmp, data_atac_sig_sf_sd_log2_cmp))
+lm_fit = lm(data_atac_sig_sf_sd_log2_gmp~data_atac_sig_sf_sd_log2_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_atac_sig_scale_log2_cmp, data_atac_sig_scale_log2_gmp, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_scale_log2_gmp, data_atac_sig_scale_log2_cmp))
+lm_fit = lm(data_atac_sig_scale_log2_gmp~data_atac_sig_scale_log2_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_atac_sig_log2_cmp, data_atac_sig_log2_gmp, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_log2_gmp, data_atac_sig_log2_cmp))
+lm_fit = lm(data_atac_sig_log2_gmp~data_atac_sig_log2_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+
+heatscatter(data_atac_sig_sf_sd_log2_cmp, data_atac_sig_sf_sd_log2_g1e, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_sf_sd_log2_g1e, data_atac_sig_sf_sd_log2_cmp))
+lm_fit = lm(data_atac_sig_sf_sd_log2_g1e~data_atac_sig_sf_sd_log2_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_atac_sig_scale_log2_cmp, data_atac_sig_scale_log2_g1e, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_scale_log2_g1e, data_atac_sig_scale_log2_cmp))
+lm_fit = lm(data_atac_sig_scale_log2_g1e~data_atac_sig_scale_log2_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_atac_sig_log2_cmp, data_atac_sig_log2_g1e, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_log2_g1e, data_atac_sig_log2_cmp))
+lm_fit = lm(data_atac_sig_log2_g1e~data_atac_sig_log2_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+
+
+par(mfrow=c(2,2))
+heatscatter(data_rna_sig_cmp-data_rna_sig_ery, data_atac_sig_log2_cmp-data_atac_sig_log2_ery, pch = 20)
+df = as.data.frame(cbind(data_rna_sig_cmp-data_rna_sig_ery, data_atac_sig_log2_cmp-data_atac_sig_log2_ery))
+lm_fit = lm(data_atac_sig_log2_cmp-data_atac_sig_log2_ery~data_rna_sig_cmp-data_rna_sig_ery, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_rna_sig_cmp-data_rna_sig_ery, data_atac_sig_sf_sd_log2_cmp-data_atac_sig_sf_sd_log2_ery, pch = 20)
+df = as.data.frame(cbind(data_rna_sig_cmp-data_rna_sig_ery, data_atac_sig_sf_sd_log2_cmp-data_atac_sig_sf_sd_log2_ery))
+lm_fit = lm(data_atac_sig_sf_sd_log2_cmp-data_atac_sig_sf_sd_log2_ery~data_rna_sig_cmp-data_rna_sig_ery, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_rna_sig_cmp-data_rna_sig_ery, data_atac_sig_scale_log2_cmp-data_atac_sig_scale_log2_ery, pch = 20)
+df = as.data.frame(cbind(data_rna_sig_cmp-data_rna_sig_ery, data_atac_sig_scale_log2_cmp-data_atac_sig_scale_log2_ery))
+lm_fit = lm(data_atac_sig_scale_log2_cmp-data_atac_sig_scale_log2_ery~data_rna_sig_cmp-data_rna_sig_ery, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_rna_sig_cmp-data_rna_sig_gmp, data_atac_sig_log2_cmp-data_atac_sig_log2_gmp, pch = 20)
+df = as.data.frame(cbind(data_rna_sig_cmp-data_rna_sig_gmp, data_atac_sig_log2_cmp-data_atac_sig_log2_gmp))
+lm_fit = lm(data_atac_sig_log2_cmp-data_atac_sig_log2_gmp~data_rna_sig_cmp-data_rna_sig_gmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+heatscatter(data_rna_sig_cmp-data_rna_sig_g1e, data_atac_sig_log2_cmp-data_atac_sig_log2_g1e, pch = 20)
+df = as.data.frame(cbind(data_rna_sig_cmp-data_rna_sig_g1e, data_atac_sig_log2_cmp-data_atac_sig_log2_g1e))
+lm_fit = lm(data_atac_sig_log2_cmp-data_atac_sig_log2_g1e~data_rna_sig_cmp-data_rna_sig_g1e, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+heatscatter(data_rna_sig_cmp-data_rna_sig_ery, data_atac_sig_log2_cmp-data_atac_sig_log2_ery, pch = 20)
+df = as.data.frame(cbind(data_rna_sig_cmp-data_rna_sig_ery, data_atac_sig_log2_cmp-data_atac_sig_log2_ery))
+lm_fit = lm(data_atac_sig_log2_cmp-data_atac_sig_log2_ery~data_rna_sig_cmp-data_rna_sig_ery, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+###
+pdf('scatter.pdf', width = 9, height = 12)
+par(mfrow=c(4,3))
+heatscatter(data_rna_sig_cmp, data_atac_sig_log2_cmp, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_log2_cmp, data_rna_sig_cmp))
+lm_fit = lm(data_atac_sig_log2_cmp~data_rna_sig_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+heatscatter(data_rna_sig_cmp, data_atac_sig_scale_log2_cmp, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_scale_log2_cmp, data_rna_sig_cmp))
+lm_fit = lm(data_atac_sig_scale_log2_cmp~data_rna_sig_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_rna_sig_cmp, data_atac_sig_sf_sd_log2_cmp, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_sf_sd_log2_cmp, data_rna_sig_cmp))
+lm_fit = lm(data_atac_sig_sf_sd_log2_cmp~data_rna_sig_cmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+heatscatter(data_rna_sig_gmp, data_atac_sig_sf_sd_log2_gmp, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_sf_sd_log2_gmp, data_rna_sig_gmp))
+lm_fit = lm(data_atac_sig_sf_sd_log2_gmp~data_rna_sig_gmp, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+heatscatter(data_rna_sig_g1e, data_atac_sig_scale_log2_g1e, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_scale_log2_g1e, data_rna_sig_g1e))
+lm_fit = lm(data_atac_sig_scale_log2_g1e~data_rna_sig_g1e, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_rna_sig_g1e, data_atac_sig_sf_sd_log2_g1e, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_sf_sd_log2_g1e, data_rna_sig_g1e))
+lm_fit = lm(data_atac_sig_sf_sd_log2_g1e~data_rna_sig_g1e, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+
+heatscatter(data_rna_sig_ery, data_atac_sig_log2_ery, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_log2_ery, data_rna_sig_ery))
+lm_fit = lm(data_atac_sig_log2_ery~data_rna_sig_ery, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+heatscatter(data_rna_sig_ery, data_atac_sig_scale_log2_ery, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_scale_log2_ery, data_rna_sig_ery))
+lm_fit = lm(data_atac_sig_scale_log2_ery~data_rna_sig_ery, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_rna_sig_ery, data_atac_sig_sf_sd_log2_ery, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_sf_sd_log2_ery, data_rna_sig_ery))
+lm_fit = lm(data_atac_sig_sf_sd_log2_ery~data_rna_sig_ery, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+heatscatter(data_rna_sig_g1e, data_atac_sig_log2_g1e, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_log2_g1e, data_rna_sig_g1e))
+lm_fit = lm(data_atac_sig_log2_g1e~data_rna_sig_g1e, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+
+heatscatter(data_rna_sig_g1e, data_atac_sig_scale_log2_g1e, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_scale_log2_g1e, data_rna_sig_g1e))
+lm_fit = lm(data_atac_sig_scale_log2_g1e~data_rna_sig_g1e, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+heatscatter(data_rna_sig_g1e, data_atac_sig_sf_sd_log2_g1e, pch = 20)
+df = as.data.frame(cbind(data_atac_sig_sf_sd_log2_g1e, data_rna_sig_g1e))
+lm_fit = lm(data_atac_sig_sf_sd_log2_g1e~data_rna_sig_g1e, data=df)
+abline(lm_fit$coefficients[1],lm_fit$coefficients[2], col='blue')
+abline(0,1)
+
+dev.off()
+
+
+
+
+
+
+
+
 
 data_atac_sf_sd_rna_sig_cor_cmp = cor(data_atac_sig_sf_sd_log2_cmp, data_rna_sig_cmp, method='spearman')
 summary((data_atac_sf_sd_rna_sig_cor_cmp))
@@ -90,6 +546,29 @@ data_atac_sf_sd_rna_sig_cor_gmp = cor(data_atac_sig_sf_sd_log2_gmp, data_rna_sig
 summary((data_atac_sf_sd_rna_sig_cor_gmp))
 data_atac_sf_sd_rna_sig_cor_gmp = cor(data_atac_sig_sf_sd_log2_gmp, data_rna_sig_gmp, method='pearson')
 summary((data_atac_sf_sd_rna_sig_cor_gmp))
+
+
+
+
+sd1=apply(data_atac_sig_sf,2,sd)
+
+
+data_atac_sig_sf_sd = t(apply(data_atac_sig_sf, 1, FUN=function(x) x/norm_info[c(1:12),18]*norm_info[c(1:12),14])) #data_atac_sig_sf#
+data_atac_sig_sf_sd_am = data_atac_sig_sf_am#t(apply(data_atac_sig_sf_am, 1, FUN=function(x) x/norm_info[c(1:12),15]*norm_info[c(1:12),11])) #data_atac_sig_sf_am#
+colnames(data_atac_sig_sf_sd) = colnames(data_atac_sig)
+colnames(data_atac_sig_sf_sd_am) = colnames(data_atac_sig)
+
+
+###### input matrix
+### od log2
+data_atac_sig_log2 = log2(data_atac_sig+1)
+### scale log2
+data_atac_sig_sf_sd_am_log2 = log2(data_atac_sig_sf_sd_am+1)
+### sf_sd_norm log2
+data_atac_sig_sf_sd_log2 = log2(data_atac_sig_sf_sd+1)
+### rna matrix
+data_rna_sig = data_rna[,c(-1,-2,-3,-4,-5)]
+
 
 
 ###### scale cor
@@ -178,25 +657,28 @@ data_rna_sig_rank = t(apply(data_rna_sig, 1, rank))
 ### spearman correlation
 data_atac_rna_sig_cor = apply(cbind(data_atac_sig, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
 data_atac_scale_rna_sig_cor = apply(cbind(data_atac_sig_scale_log2, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
-data_atac_sf_sd_rna_sig_cor = apply(cbind(data_atac_sig_sf_sd, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
+data_atac_sf_sd_rna_sig_cor = apply(cbind(data_atac_sig_sf_sd_log2, data_rna_sig), MARGIN=1, FUN=function(x) cor(x[1:12], x[13:24], method='spearman') )
 
 summary((data_atac_rna_sig_cor))
 summary((data_atac_scale_rna_sig_cor))
 summary((data_atac_sf_sd_rna_sig_cor))
 
+par(mfrow=c(2,2))
 hist(abs(data_atac_rna_sig_cor), breaks = 50)
 hist(abs(data_atac_sf_sd_rna_sig_cor), breaks = 50)
+
 
 par(mfrow=c(2,2))
 plot(density(abs(data_atac_rna_sig_cor[!is.na(data_atac_rna_sig_cor)])), ylim=c(0,2.5))
 plot(density(abs(data_atac_scale_rna_sig_cor[!is.na(data_atac_scale_rna_sig_cor)])), ylim=c(0,2.5))
 plot(density(abs(data_atac_sf_sd_rna_sig_cor[!is.na(data_atac_sf_sd_rna_sig_cor)])), ylim=c(0,2.5))
 
+png('spearman_corr.png')
 par(mfrow=c(2,2))
 plot(density((data_atac_rna_sig_cor[!is.na(data_atac_rna_sig_cor)])), ylim=c(0,2.5))
 plot(density((data_atac_scale_rna_sig_cor[!is.na(data_atac_scale_rna_sig_cor)])), ylim=c(0,2.5))
 plot(density((data_atac_sf_sd_rna_sig_cor[!is.na(data_atac_sf_sd_rna_sig_cor)])), ylim=c(0,2.5))
-
+dev.off()
 
 par(mfrow=c(2,2))
 plot(density((data_atac_rna_sig_cor[log(data_rna_sig_var)<(-4)][!is.na(data_atac_rna_sig_cor[log(data_rna_sig_var)<(-4)])])), ylim=c(0,4), xlim=c(-1,1))
@@ -228,4 +710,4 @@ heatscatter(data_atac_sig_var, data_rna_sig_var, pch = 20)#, ylim=c(-10,5), xlim
 heatscatter(log(data_atac_sig_var), log(data_rna_sig_var), pch = 20)#, ylim=c(-10,5), xlim=c(20,10000))
 plot(data_atac_sig_rank_var, data_rna_sig_var)
 heatscatter(data_atac_cmp, data_atac_cmp, pch = 20)
-
+'''

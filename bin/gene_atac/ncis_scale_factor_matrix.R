@@ -48,82 +48,84 @@ for (i in c(1:dim(ncis_table_list)[1])){
 	print(sum(data_t>t_threshold))
 	print(t_threshold)
 
-	if (t_threshold > 0){
-		data_x_low_vs_sig = data_x[data_t<=t_threshold]
-		data_y_low_vs_sig = data_y[data_t<=t_threshold]
-		### remove zero for plotting
-		data_x_low_vs_sig_non0 = data_x_low_vs_sig[as.logical((data_x_low_vs_sig!=0) * (data_y_low_vs_sig!=0))]
-		data_y_low_vs_sig_non0 = data_y_low_vs_sig[as.logical((data_x_low_vs_sig!=0) * (data_y_low_vs_sig!=0))]
-		print('length(data_y_low_vs_sig_non0):')
-		print(length(data_y_low_vs_sig_non0))
 
-		### get sig_vs_sig regions
-		data_x_sig_vs_sig = data_x[data_t>t_threshold]
-		data_y_sig_vs_sig = data_y[data_t>t_threshold]
-		### remove zero for plotting
-		data_x_sig_vs_sig_non0 = data_x_sig_vs_sig[as.logical((data_x_sig_vs_sig!=0) * (data_y_sig_vs_sig!=0))]
-		data_y_sig_vs_sig_non0 = data_y_sig_vs_sig[as.logical((data_x_sig_vs_sig!=0) * (data_y_sig_vs_sig!=0))]
-		print('length(data_y_sig_vs_sig_non0):')
-		print(length(data_y_sig_vs_sig_non0))
+	data_x_low_vs_sig = data_x[data_t<=t_threshold]
+	data_y_low_vs_sig = data_y[data_t<=t_threshold]
+	### remove zero for plotting
+	data_x_low_vs_sig_non0 = data_x_low_vs_sig[as.logical((data_x_low_vs_sig!=0) * (data_y_low_vs_sig!=0))]
+	data_y_low_vs_sig_non0 = data_y_low_vs_sig[as.logical((data_x_low_vs_sig!=0) * (data_y_low_vs_sig!=0))]
+	print('length(data_y_low_vs_sig_non0):')
+	print(length(data_y_low_vs_sig_non0))
+
+	### get sig_vs_sig regions
+	data_x_sig_vs_sig = data_x[data_t>t_threshold]
+	data_y_sig_vs_sig = data_y[data_t>t_threshold]
+	### remove zero for plotting
+	data_x_sig_vs_sig_non0 = data_x_sig_vs_sig[as.logical((data_x_sig_vs_sig!=0) * (data_y_sig_vs_sig!=0))]
+	data_y_sig_vs_sig_non0 = data_y_sig_vs_sig[as.logical((data_x_sig_vs_sig!=0) * (data_y_sig_vs_sig!=0))]
+	print('length(data_y_sig_vs_sig_non0):')
+	print(length(data_y_sig_vs_sig_non0))
 
 
-		###### scale factors
-		scale_factor = function(data_x, data_y, method){
-			### get mean
-			if (method=='mean'){
-					merge_x = mean(data_x)
-					merge_y = mean(data_y)
-				} else{
-					merge_x = median(data_x)
-					merge_y = median(data_y)
-				}
+	###### scale factors
+	scale_factor = function(data_x, data_y, method){
+		### get mean
+		if (method=='mean'){
+				merge_x = mean(data_x)
+				merge_y = mean(data_y)
+			} else{
+				merge_x = median(data_x)
+				merge_y = median(data_y)
+			}
 
-			### get scale factor log scale
-			sf = merge_y / merge_x
+		### get scale factor log scale
+		sf = merge_y / merge_x
 
-			### normalize y value
-			data_x = data_x * sf
+		### normalize y value
+		data_x = data_x * sf
 
-			### get std
-			std_x = sd(data_x)
-			std_y = sd(data_y)
+		### get std
+		std_x = sd(data_x)
+		std_y = sd(data_y)
 
-			### get M & A for MA plot
-			M = log(data_y/std_y) - log(data_x/std_x) 
-			A = 0.5*(log(data_y/std_y) + log(data_x/std_x) )
+		print(std_y)
 
-			### remove 0s for plotting
-			for_plotting_id = as.logical( (!is.na(M)) * (!is.na(A)) )
-			M = M[for_plotting_id]
-			A = A[for_plotting_id]
+		### get M & A for MA plot
+		M = log(data_y/std_y) - log(data_x/std_x)
+		A = 0.5*(log(data_y/std_y) + log(data_x/std_x) )
 
-			#print(length(M))
-			#print(length(A))
-			output = list('sf'=sf, 'M'=M, 'A'=A, 'std_x'=std_x, 'std_y'=std_y)
-			return(output)
-		}
-
-		### original signal M & A
-		od_M = log(data_y) - log(data_x) 
-		od_A = 0.5*(log(data_y) + log(data_x) )
 		### remove 0s for plotting
-		for_plotting_id = as.logical( (!is.na(od_M)) * (!is.na(od_A)) )
-		od_M = od_M[for_plotting_id]
-		od_A = od_A[for_plotting_id]
+		for_plotting_id = as.logical( (!is.na(M)) * (!is.na(A)) )
+		M = M[for_plotting_id]
+		A = A[for_plotting_id]
 
-		### sf od mean
-		sf_info = scale_factor(data_x, data_y, 'mean')
+		#print(length(M))
+		#print(length(A))
+		output = list('sf'=sf, 'M'=M, 'A'=A, 'merge_x'=merge_x, 'merge_y'=merge_y, 'std_x'=std_x, 'std_y'=std_y)
+		return(output)
+	}
 
-		### sf od median
-		sf_info_median = scale_factor(data_x, data_y, 'median')
+	### original signal M & A
+	od_M = log(data_y) - log(data_x) 
+	od_A = 0.5*(log(data_y) + log(data_x) )
+	### remove 0s for plotting
+	for_plotting_id = as.logical( (!is.na(od_M)) * (!is.na(od_A)) )
+	od_M = od_M[for_plotting_id]
+	od_A = od_A[for_plotting_id]
 
-		### scale low_vs_sig
-		sf_info_low_vs_sig = scale_factor(data_x_low_vs_sig, data_y_low_vs_sig, 'mean')
+	### sf od mean
+	sf_info = scale_factor(data_x, data_y, 'mean')
 
-		### scale sig_vs_sig
-		sf_info_sig_vs_sig = scale_factor(data_x_sig_vs_sig, data_y_sig_vs_sig, 'mean')
+	### sf od median
+	sf_info_median = scale_factor(data_x, data_y, 'median')
 
+	### scale low_vs_sig
+	sf_info_low_vs_sig = scale_factor(data_x_low_vs_sig, data_y_low_vs_sig, 'mean')
 
+	### scale sig_vs_sig
+	sf_info_sig_vs_sig = scale_factor(data_x_sig_vs_sig, data_y_sig_vs_sig, 'mean')
+
+	if (t_threshold > 0){
 		### plot sig_vs_sig only
 		print('scatter plot')
 		png(paste(output_folder, output_file_name, '.sig_vs_sig.hs.png', sep =''))
@@ -166,9 +168,9 @@ for (i in c(1:dim(ncis_table_list)[1])){
 		dev.off()	
 
 		### get scale factor vector
-		sf_vector = c(sf_info$sf, sf_info_median$sf, sf_info_low_vs_sig$sf, sf_info_sig_vs_sig$sf,   sf_info$std_x, sf_info_median$std_x, sf_info_low_vs_sig$std_x, sf_info_sig_vs_sig$std_x,   sf_info$std_y, sf_info_median$std_y, sf_info_low_vs_sig$std_y, sf_info_sig_vs_sig$std_y )
+		sf_vector = c(sf_info$merge_x, sf_info_median$merge_x, sf_info_low_vs_sig$merge_x, sf_info_sig_vs_sig$merge_x,   sf_info$merge_y, sf_info_median$merge_y, sf_info_low_vs_sig$merge_y, sf_info_sig_vs_sig$merge_y,   sf_info$std_x, sf_info_median$std_x, sf_info_low_vs_sig$std_x, sf_info_sig_vs_sig$std_x,   sf_info$std_y, sf_info_median$std_y, sf_info_low_vs_sig$std_y, sf_info_sig_vs_sig$std_y )
 	} else{
-		sf_vector = c(1, 1, 1, 1,   1, 1, 1, 1,   1, 1, 1, 1)
+		sf_vector = c(sf_info$merge_x, sf_info_median$merge_x, sf_info_low_vs_sig$merge_x, sf_info_sig_vs_sig$merge_x,   sf_info$merge_y, sf_info_median$merge_y, sf_info_low_vs_sig$merge_y, sf_info_sig_vs_sig$merge_y,   sf_info$std_x, sf_info_median$std_x, sf_info_low_vs_sig$std_x, sf_info_sig_vs_sig$std_x,   sf_info$std_y, sf_info_median$std_y, sf_info_low_vs_sig$std_y, sf_info_sig_vs_sig$std_y )
 	}
 
 	### get low_vs_sig regions
@@ -178,6 +180,8 @@ for (i in c(1:dim(ncis_table_list)[1])){
 }
 
 ### write sf_all_matrix 
+print('sf_all_matrix')
 sf_all_matrix = cbind(ncis_table_list, sf_all_matrix )
+print('write output')
 write.table(sf_all_matrix, scale_factor_output_file, quote=FALSE, col.names=FALSE, row.names=FALSE, sep='\t')
 

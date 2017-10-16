@@ -54,6 +54,20 @@ cd $analysis_folder
 	cat $gene_list'gencode_pc_sort.bed' | awk -F '\t' -v OFS='\t' '{if ($2-10000 > 0) print $1,$2-10000,$3+10000,$4,$5,$6}' > $gene_list'gencode_pc_sort.exp10kb.bed'
 	### get TSS
 	cat $gene_list'gencode_pc_sort.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+" && $2-10000>0) print $1,$2-10000,$2+10000,$4,$5,$6; else if ($6=="-" && $3-10000>0) print $1,$3-10000,$3+10000,$4,$5,$6}' > $gene_list'gencode_pc_sort.TSSexp10kb.bed'
+	cat $gene_list'gencode_pc_sort.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+" && $2-5000>0) print $1,$2-10000,$2+5000,$4,$5,$6; else if ($6=="-" && $3-5000>0) print $1,$3-5000,$3+5000,$4,$5,$6}' > $gene_list'gencode_pc_sort.TSSexp5kb.bed'
+	cat $gene_list'gencode_pc_sort.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+" && $2-1000>0) print $1,$2-10000,$2+1000,$4,$5,$6; else if ($6=="-" && $3-1000>0) print $1,$3-1000,$3+1000,$4,$5,$6}' > $gene_list'gencode_pc_sort.TSSexp1kb.bed'
+
+	cat $gene_list'gencode_pc_sort.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+" && $2-100000>0) print $1,$2-100000,$2+100000,$4,$5,$6; else if ($6=="-" && $3-100000>0) print $1,$3-100000,$3+100000,$4,$5,$6}' > $gene_list'gencode_pc_sort.TSSexp100kb.bed'
+	cat $gene_list'gencode_pc_sort.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+" && $2-110000>0) print $1,$2-110000,$2+110000,$4,$5,$6; else if ($6=="-" && $3-110000>0) print $1,$3-110000,$3+110000,$4,$5,$6}' > $gene_list'gencode_pc_sort.TSSexp110kb.bed'
+
+	cat $gene_list'gencode_pc_sort.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+" && $2-100000-5000>0) print $1,$2-100000-5000,$2-100000,$4,$5,$6; else if ($6=="-" && $3-100000-5000>0) print $1,$3+100000,$3+100000+5000,$4,$5,$6}' > $gene_list'gencode_pc_sort.TSSup100kb.bed'
+	cat $gene_list'gencode_pc_sort.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+" && $2-100000-5000>0) print $1,$2+100000,$2+100000+5000,$4,$5,$6; else if ($6=="-" && $3-100000-5000>0) print $1,$3-100000-5000,$3-100000,$4,$5,$6}' > $gene_list'gencode_pc_sort.TSSdown100kb.bed'
+
+	cat $gene_list'gencode_pc_sort.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+" && $2-1000000-5000>0) print $1,$2-1000000-5000,$2-1000000,$4,$5,$6; else if ($6=="-" && $3-1000000-5000>0) print $1,$3+1000000,$3+1000000+5000,$4,$5,$6}' > $gene_list'gencode_pc_sort.TSSup1000kb.bed'
+	cat $gene_list'gencode_pc_sort.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+" && $2-1000000-5000>0) print $1,$2+1000000,$2+1000000+5000,$4,$5,$6; else if ($6=="-" && $3-1000000-5000>0) print $1,$3-1000000-5000,$3-1000000,$4,$5,$6}' > $gene_list'gencode_pc_sort.TSSdown1000kb.bed'
+
+	bedtools intersect -a $gene_list'gencode_pc_sort.TSSexp110kb.bed' -b $gene_list'gencode_pc_sort.TSSexp100kb.bed' > $gene_list'gencode_pc_sort.TSSexp110kb_sub_100kb.bed'
+
 
 ### scp $gene_list'gencode_pc_sort'*'.bed' gzx103@biostar.psu.edu:/gpfs/home/gzx103/scratch/vision_clustering/gene_atac_sig/
 
@@ -105,15 +119,59 @@ cd $analysis_folder
 ###### gene atac
 	### merge normed rsem sample matrix to cell type matrix
 	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.atac.celltype.txt'
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSexp1kb.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSexp1kb.atac.celltype.txt'
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSexp5kb.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSexp5kb.atac.celltype.txt'
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSexp10kb.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSexp10kb.atac.celltype.txt'
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSup100kb.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSup100kb.atac.celltype.txt'
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSdown100kb.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSdown100kb.atac.celltype.txt'
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSup1000kb.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.txt'
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSdown1000kb.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSdown1000kb.atac.celltype.txt'
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSexp110kb_sub_100kb.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSexp110kb_sub_100kb.atac.celltype.txt'
 
 	### merge normed rsem sample matrix to cell type matrix
 	time python $script_folder'rna_matrix/vlookup_bed.py' -t $gene_atac'gencode_pc_sort.atac.celltype.txt' -s $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.txt' -o $gene_atac'gencode_pc_sort.atac.celltype.matched.txt' -k F
 
+	###### get TSS expand atac-signal
+	### get rsem id table
+	echo 3 > $rsem_matrix_folder'rsem_matrix_id.txt'
+	tail -n+2 $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.txt' | awk -F ';' -v OFS=';' '{print $1,$2}' | awk -F '\t' -v OFS='\t' '{print $4}' >> $rsem_matrix_folder'rsem_matrix_id.txt'
+
+	cat $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.txt' | awk -F ';' -v OFS='\t' '{print $1,$2,$3}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3,$4";"$5,$6,$7,  $8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19 }' > $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.notmatched.txt'
+
+	### sort TSS atac-signal matrix
+	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.txt' -m 4 -s $rsem_matrix_folder'rsem_matrix_id.txt' -n 1 -o $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.matched.txt' -k F
+
+	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $gene_atac'gencode_pc_sort.TSSdown1000kb.atac.celltype.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.matched.txt' -n 4 -o $gene_atac'gencode_pc_sort.TSSdown1000kb.atac.celltype.matched.txt' -k F
+	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $gene_atac'gencode_pc_sort.TSSup100kb.atac.celltype.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.matched.txt' -n 4 -o $gene_atac'gencode_pc_sort.TSSup100kb.atac.celltype.matched.txt' -k F
+	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $gene_atac'gencode_pc_sort.TSSdown100kb.atac.celltype.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.matched.txt' -n 4 -o $gene_atac'gencode_pc_sort.TSSdown100kb.atac.celltype.matched.txt' -k F
+	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $gene_atac'gencode_pc_sort.TSSexp1kb.atac.celltype.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.matched.txt' -n 4 -o $gene_atac'gencode_pc_sort.TSSexp1kb.atac.celltype.matched.txt' -k F
+	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $gene_atac'gencode_pc_sort.TSSexp5kb.atac.celltype.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.matched.txt' -n 4 -o $gene_atac'gencode_pc_sort.TSSexp5kb.atac.celltype.matched.txt' -k F
+	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $gene_atac'gencode_pc_sort.TSSexp10kb.atac.celltype.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.matched.txt' -n 4 -o $gene_atac'gencode_pc_sort.TSSexp10kb.atac.celltype.matched.txt' -k F
+
+	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.notmatched.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup100kb.atac.celltype.matched.txt' -n 4 -o $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.matched.txt' -k F
+	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $gene_atac'gencode_pc_sort.atac.celltype.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup100kb.atac.celltype.matched.txt' -n 4 -o $gene_atac'gencode_pc_sort.atac.celltype.matched.txt' -k F
+
 
 ###### atac NCIS norm
+	### get ncis table
+	while read LINE
+	do
+		output_name=$(echo "$LINE" | awk '{print $3}')
+		sig1=$(echo "$LINE" | awk '{print $4}')
+		sig2=$(echo "$LINE" | awk '{print $5}')
+		echo $output_name
+		time python $script_folder'ncis_norm/get_ncis_t_a_b.py' -i $atac_reads_table$sig1 -j $atac_reads_table$sig2 -o $atac_ncis_table$output_name
+	done < $input_folder'ncis_table_list.txt'
+
+	### get the NCIS T-R model normed matrix
+	time Rscript $script_folder'gene_atac/ncis_t_norm.R' $input_folder'ncis_table_t_norm.txt' $gene_atac'gencode_pc_sort.TSSexp10kb.atac.celltype.matched.txt' $gene_atac'gencode_pc_sort.TSSexp10kb.atac.celltype.matched.TRnormed.txt' $atac_ncis_table
+
 	### get the NCIS R VS T pattern variance change-point
 	time Rscript $script_folder'gene_atac/ncis_change_point.R' $input_folder'ncis_table_list.txt' $scale_factor_matrix'ncis_table_list.t_thresh.txt' $atac_ncis_table $atac_ncis_table_plot BinSeg
 
 	### get scale factor table
 	time Rscript $script_folder'gene_atac/ncis_scale_factor_matrix.R' $scale_factor_matrix'ncis_table_list.t_thresh.txt' $scale_factor_matrix'ncis_table_list.sf.txt' $atac_reads_table $atac_ncis_table_plot 500000 T
+
+	### compare dif norm results
+	time Rscript $script_folder'variance_check_atac_rna/check_variance_cor.R'
 

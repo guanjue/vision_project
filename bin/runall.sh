@@ -6,6 +6,7 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
 	###### initiate folders
 	input_folder='input_data/'
 	index_set_dir='index_set_matrix/'
+	index_set_bed='index_set_bed/'
 	index_set_sig_dir='index_set_sig_matrix/'
 	index_set_ideas_RE_dir='index_set_ideas_RE/'
 	index_set_figure_dir='index_set_figure/'
@@ -15,6 +16,12 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
     	rm -r $index_set_dir
 	fi
 	mkdir $index_set_dir
+
+	### mkdir index_set module folder
+	if [ -d "$index_set_bed" ]; then  
+    	rm -r $index_set_bed
+	fi
+	mkdir $index_set_bed
 
 	### mkdir index_set module folder
 	if [ -d "$index_set_sig_dir" ]; then  
@@ -48,6 +55,11 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
 	### get index sets (CORE!!!)
 	echo 'get index sets (CORE!!!)'
 	time python $script_folder'index_set/get_index_set.py' -i $index_set_dir'celltype.binary_pattern.txt' -r $input_folder'celltype.order.txt' -l $input_folder'signal_level_range.txt' -f $index_set_dir'celltype.index.sorted.txt' -s $index_set_dir'celltype.index_set.sorted.txt'
+
+	### sort interval file
+	time python $script_folder'sort_matrix/vlookup.py' -t $index_set_dir'homerTable3.peaks.filtered.interval.txt' -m 1 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $index_set_dir'celltype.interval.index.sorted.txt' -k T
+	### clean matrix format
+	cat $index_set_dir'celltype.interval.index.sorted.txt' | awk -F '\t' -v OFS='\t' '{print $2,$3,$4,$5,  $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22}' > $index_set_dir'celltype.interval.index.sorted.bed'
 
 	### plot index set
 	echo 'plot index set'
@@ -133,6 +145,47 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
 
 	### plot the proportion of each ideas state in cRE for each cell type
 	time Rscript $script_folder'figures/plot_celltype_cRE_IDEASpro_bar.R' $index_set_ideas_RE_dir'celltype.index.ideas_RE.sorted.txt' $input_folder'state_color.txt' $index_set_figure_dir'celltype_cRE_IDEASpro_bar.pdf'
+
+	###### get interesting index sets
+	### lsk1_cmp1_mep1_gmp0
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==1   &&   $7==1 && $10==1 && $14==1   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep1_ery1_meg1_gmp0_monoX_neuX.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==1   &&   $7==1 && $10==1 && $14==0   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep1_ery1_meg0_gmp0_monoX_neuX.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==1   &&   $7==1 && $10==0 && $14==1   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep1_ery0_meg1_gmp0_monoX_neuX.bed'
+	### lsk0_cmp0_mep1_gmp0
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==0   &&   $7==1 && $10==1 && $14==1   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep1_ery1_meg1_gmp0_monoX_neuX.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==0   &&   $7==1 && $10==1 && $14==0   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep1_ery1_meg0_gmp0_monoX_neuX.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==0   &&   $7==1 && $10==0 && $14==1   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep1_ery0_meg1_gmp0_monoX_neuX.bed'
+	### lsk0_cmp1_mep1_gmp0
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==1   &&   $7==1 && $10==1 && $14==1   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk0_cmp1_mep1_ery1_meg1_gmp0_monoX_neuX.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==1   &&   $7==1 && $10==1 && $14==0   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk0_cmp1_mep1_ery1_meg0_gmp0_monoX_neuX.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==1   &&   $7==1 && $10==0 && $14==1   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk0_cmp1_mep1_ery0_meg1_gmp0_monoX_neuX.bed'
+	### lsk1_cmp0_mep1_gmp0
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==0   &&   $7==1 && $10==1 && $14==1   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp0_mep1_ery1_meg1_gmp0_monoX_neuX.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==0   &&   $7==1 && $10==1 && $14==0   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp0_mep1_ery1_meg0_gmp0_monoX_neuX.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==0   &&   $7==1 && $10==0 && $14==1   &&   $8==0 && $15!=""&& $16!="") print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp0_mep1_ery0_meg1_gmp0_monoX_neuX.bed'
+	### lsk1_cmp1_mep0_gmp1
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==1   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==1 && $16==1 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep0_eryX_megX_gmp1_mono1_neu1.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==1   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==1 && $16==0 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep0_eryX_megX_gmp1_mono1_neu0.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==1   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==0 && $16==1 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep0_eryX_megX_gmp1_mono0_neu1.bed'
+	### lsk0_cmp0_mep0_gmp1
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==0   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==1 && $16==1 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep0_eryX_megX_gmp1_mono1_neu1.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==0   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==1 && $16==0 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep0_eryX_megX_gmp1_mono1_neu0.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==0   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==0 && $16==1 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp1_mep0_eryX_megX_gmp1_mono0_neu1.bed'
+	### lsk0_cmp1_mep0_gmp1
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==1   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==1 && $16==1 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk0_cmp1_mep0_eryX_megX_gmp1_mono1_neu1.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==1   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==1 && $16==0 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk0_cmp1_mep0_eryX_megX_gmp1_mono1_neu0.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==0 && $6==1   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==0 && $16==1 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk0_cmp1_mep0_eryX_megX_gmp1_mono0_neu1.bed'
+	### lsk1_cmp0_mep0_gmp1
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==0   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==1 && $16==1 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp0_mep0_eryX_megX_gmp1_mono1_neu1.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==0   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==1 && $16==0 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp0_mep0_eryX_megX_gmp1_mono1_neu0.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==0   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==0 && $16==1 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp0_mep0_eryX_megX_gmp1_mono0_neu1.bed'
+
+
+
+
+
+
+
 
 
 
