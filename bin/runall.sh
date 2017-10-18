@@ -60,6 +60,7 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
 	time python $script_folder'sort_matrix/vlookup.py' -t $index_set_dir'homerTable3.peaks.filtered.interval.txt' -m 1 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $index_set_dir'celltype.interval.index.sorted.txt' -k T
 	### clean matrix format
 	cat $index_set_dir'celltype.interval.index.sorted.txt' | awk -F '\t' -v OFS='\t' '{print $2,$3,$4,$5,  $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22}' > $index_set_dir'celltype.interval.index.sorted.bed'
+	cat $index_set_dir'celltype.interval.index.sorted.txt' | awk -F '\t' -v OFS='\t' '{print $2,$3,$4,$5}' > $index_set_dir'celltype.interval.index.sorted.onlybed.bed'
 
 	### plot index set
 	echo 'plot index set'
@@ -112,6 +113,21 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
 	### plot index set RPKM
 	echo 'plot index set RPKM'
 	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.rpkm.sorted.txt' $index_set_sig_dir'celltype.index.rpkm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_rpkm_all.pdf' $index_set_figure_dir'index_set_rpkm_thresh.pdf' $index_set_figure_dir'index_rpkm.png' red 200 0.99 log2
+
+	######## DNA region raw 5end reads
+	echo 'get cell type average matrix'
+	time python $script_folder'index_set/merge_cell_type_data.py' -i $input_folder'homerTable3.peaks.filtered.5end.txt' -m $input_folder'sample2celltype.txt' -n 2 -o $index_set_dir'celltype.5end.txt'
+	### 5end matrix sort
+	echo '5end matrix sort'
+	time python $script_folder'sort_matrix/get_index_signal_matrix.py' -t $index_set_dir'celltype.5end.txt' -a 1 -s $index_set_dir'celltype.index.sorted.txt' -b 1 -r $input_folder'celltype.order.txt' -q 75 -o $index_set_sig_dir'celltype.index.5end.sorted.txt' -p $index_set_sig_dir'celltype.index_set.5end.sorted.txt'
+	### filter the original matrix to 210k matrix
+	echo 'filter the original matrix to 210k matrix'
+	time python $script_folder'sort_matrix/vlookup.py' -t $input_folder'homerTable3.peaks.filtered.5end.txt' -m 1 -s $index_set_dir'celltype.index.sorted.txt' -n 1 -o $input_folder'homerTable3.peaks.filtered.5end.210k.txt' -k F
+	### plot index set 5end
+	echo 'plot index set 5end'
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.5end.sorted.txt' $index_set_sig_dir'celltype.index.5end.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_5end_all.pdf' $index_set_figure_dir'index_set_5end_thresh.pdf' $index_set_figure_dir'index_5end.png' red 200 0.99 log2
+
+
 
 ##################################
 ### get IDEAS states matrix
@@ -181,8 +197,23 @@ index_caller_script_folder='/Volumes/MAC_Data/data/labs/zhang_lab/01projects/ind
 	cat $index_set_dir'celltype.interval.index.sorted.bed' | awk -F '\t' -v OFS='\t' '{if ($5==1 && $6==0   &&   $7==0 && $10!=""&& $14!=""  &&   $8==1 && $15==0 && $16==1 ) print $0}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3}' > $index_set_bed'celltype.interval.index.sorted.lsk1_cmp0_mep0_eryX_megX_gmp1_mono0_neu1.bed'
 
 
+	###### prepare for correlation analysis
+	paste $index_set_dir'celltype.interval.index.sorted.onlybed.bed' $index_set_sig_dir'celltype.index.tpm.sorted.txt' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3,$4,  $6";"$7";"$8";"$9";"$10";"$11";"$12";"$13";"$14";"$15";"$16";"$17";"$18";"$19";"$20";"$21}' > $index_set_sig_dir'celltype.index.tpm.sorted.bed.txt'
+	paste $index_set_dir'celltype.interval.index.sorted.onlybed.bed' $index_set_sig_dir'celltype.index.rpkm.sorted.txt' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3,$4,  $6";"$7";"$8";"$9";"$10";"$11";"$12";"$13";"$14";"$15";"$16";"$17";"$18";"$19";"$20";"$21}' > $index_set_sig_dir'celltype.index.rpkm.sorted.bed.txt'
+	paste $index_set_dir'celltype.interval.index.sorted.onlybed.bed' $index_set_sig_dir'celltype.index.5end.sorted.txt' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3,$4,  $6";"$7";"$8";"$9";"$10";"$11";"$12";"$13";"$14";"$15";"$16";"$17";"$18";"$19";"$20";"$21}' > $index_set_sig_dir'celltype.index.5end.sorted.bed.txt'
 
 
+
+	### get ncis norm cRE signals
+	time Rscript $script_folder'variance_check_atac_rna/norm_matrix.R' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/atacseq/index_set_sig_matrix/celltype.index.5end.sorted.txt' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/gene_rnaseq_atac/scale_factor_matrix/ncis_table_list.sf.txt' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/atacseq/index_set_sig_matrix/celltype.index.5end.ncis_normed.sorted.txt'
+	time Rscript $script_folder'variance_check_atac_rna/norm_matrix.R' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/atacseq/index_set_sig_matrix/celltype.index_set.5end.sorted.txt' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/gene_rnaseq_atac/scale_factor_matrix/ncis_table_list.sf.txt' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/atacseq/index_set_sig_matrix/celltype.index_set.5end.ncis_normed.sorted.txt'
+	### norm atac-seq peak length
+	paste $index_set_dir'celltype.interval.index.sorted.onlybed.bed' $index_set_sig_dir'celltype.index.5end.ncis_normed.sorted.txt' | head -1 | awk -F '\t' -v OFS='\t' '{print $1,$2,$3,$4,  $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21}' > $index_set_sig_dir'celltype.index.5end.ncis_normed.sorted.bed.txt'
+	paste $index_set_dir'celltype.interval.index.sorted.onlybed.bed' $index_set_sig_dir'celltype.index.5end.ncis_normed.sorted.txt' | tail -n+2 | awk -F '\t' -v OFS='\t' '{print $1,$2,$3,$4,  $6/($3-$2)*1000";"$7/($3-$2)*1000";"$8/($3-$2)*1000";"$9/($3-$2)*1000";"$10/($3-$2)*1000";"$11/($3-$2)*1000";"$12/($3-$2)*1000";"$13/($3-$2)*1000";"$14/($3-$2)*1000";"$15/($3-$2)*1000";"$16/($3-$2)*1000";"$17/($3-$2)*1000";"$18/($3-$2)*1000";"$19/($3-$2)*1000";"$20/($3-$2)*1000";"$21/($3-$2)*1000}' >> $index_set_sig_dir'celltype.index.5end.ncis_normed.sorted.bed.txt'
+	paste $index_set_dir'celltype.interval.index.sorted.onlybed.bed' $index_set_sig_dir'celltype.index.5end.ncis_normed.sorted.txt' | head -1 | awk -F '\t' -v OFS='\t' '{print $4,  $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21}' > $index_set_sig_dir'celltype.index.5end.ncis_normed_len_norm.sorted.txt'
+	paste $index_set_dir'celltype.interval.index.sorted.onlybed.bed' $index_set_sig_dir'celltype.index.5end.ncis_normed.sorted.txt' | tail -n+2 | awk -F '\t' -v OFS='\t' '{print $4,  $6/($3-$2)*1000, $7/($3-$2)*1000, $8/($3-$2)*1000, $9/($3-$2)*1000, $10/($3-$2)*1000, $11/($3-$2)*1000, $12/($3-$2)*1000, $13/($3-$2)*1000, $14/($3-$2)*1000, $15/($3-$2)*1000, $16/($3-$2)*1000, $17/($3-$2)*1000, $18/($3-$2)*1000, $19/($3-$2)*1000, $20/($3-$2)*1000, $21/($3-$2)*1000}' >> $index_set_sig_dir'celltype.index.5end.ncis_normed_len_norm.sorted.txt'
+	### plot ncis normed result
+	time Rscript $script_folder'figures/plot_index_set_signal_module.R' $index_set_sig_dir'celltype.index_set.5end.ncis_normed.sorted.txt' $index_set_sig_dir'celltype.index.5end.ncis_normed_len_norm.sorted.txt' $index_set_dir'celltype.index_set.sorted.txt' $index_set_figure_dir'index_set_5end_all.ncis_normed.pdf' $index_set_figure_dir'index_set_5end_thresh.ncis_normed.pdf' $index_set_figure_dir'index_5end.ncis_normed.png' red 200 0.99 log2
 
 
 

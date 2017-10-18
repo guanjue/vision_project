@@ -91,8 +91,8 @@ for (i in c(1:dim(ncis_table_list)[1])){
 		print(std_y)
 
 		### get M & A for MA plot
-		M = log(data_y/std_y) - log(data_x/std_x)
-		A = 0.5*(log(data_y/std_y) + log(data_x/std_x) )
+		M = log(data_y/1) - log(data_x/1)
+		A = 0.5*(log(data_y/1) + log(data_x/1) )
 
 		### remove 0s for plotting
 		for_plotting_id = as.logical( (!is.na(M)) * (!is.na(A)) )

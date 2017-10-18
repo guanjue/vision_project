@@ -175,3 +175,11 @@ cd $analysis_folder
 	### compare dif norm results
 	time Rscript $script_folder'variance_check_atac_rna/check_variance_cor.R'
 
+	### get ncis norm cRE signals
+	time Rscript $script_folder'variance_check_atac_rna/norm_matrix.R' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/atacseq/index_set_sig_matrix/celltype.index.5end.sorted.txt' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/gene_rnaseq_atac/scale_factor_matrix/ncis_table_list.sf.txt' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/atacseq/index_set_sig_matrix/celltype.index.5end.ncis_normed.sorted.txt'
+	time Rscript $script_folder'variance_check_atac_rna/norm_matrix.R' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/atacseq/index_set_sig_matrix/celltype.index_set.5end.sorted.txt' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/gene_rnaseq_atac/scale_factor_matrix/ncis_table_list.sf.txt' '/Volumes/MAC_Data/data/labs/hardison_lab/vision/atacseq/index_set_sig_matrix/celltype.index_set.5end.ncis_normed.sorted.txt'
+
+
+
+
+

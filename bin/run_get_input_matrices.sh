@@ -35,4 +35,10 @@ time python $script_folder'get_5p_matrix/reads_count_rpkm.py' -i 'input_data/rea
 echo 'sort tpm column order (come from bam file name sort order) by homerTable3.peaks.filtered.txt column order'
 time python $script_folder'get_5p_matrix/cell_type_sort.py' -i 'input_data/reads_count_matrix_5end_rpkm.txt' -b 'input_data/bam_file.txt' -r 'input_data/homerTable3.peaks.filtered.txt' -o 'input_data/homerTable3.peaks.filtered.rpkm.txt'
 
+### remove length colmun of the original 5end matrix
+echo 'remove length column'
+time python $script_folder'get_5p_matrix/remove_columns.py' -i 'input_data/reads_count_matrix_5end.txt' -r 5, -o 'input_data/reads_count_matrix_5end.matrix.txt'
+### cell type sorting (column sorting)
+echo 'sort raw 5 end column order (come from bam file name sort order) by homerTable3.peaks.filtered.txt column order'
+time python $script_folder'get_5p_matrix/cell_type_sort.py' -i 'input_data/reads_count_matrix_5end.matrix.txt' -b 'input_data/bam_file.txt' -r 'input_data/homerTable3.peaks.filtered.txt' -o 'input_data/homerTable3.peaks.filtered.5end.txt'
 

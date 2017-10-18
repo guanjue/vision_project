@@ -17,7 +17,7 @@ def reads_count_tpm(input_readscount_matrix, output_tpm_matrix):
 	r_l = []
 	for sigs in data0_sig:
 		l = sigs[0]
-		r_l_tmp = sigs[1:] / l
+		r_l_tmp = sigs[1:] / l * 1000
 		r_l.append(r_l_tmp)
 	r_l = np.array(r_l)
 

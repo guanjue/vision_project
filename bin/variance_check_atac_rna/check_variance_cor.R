@@ -10,6 +10,9 @@ norm_info = read.table('scale_factor_matrix/ncis_table_list.sf.txt')
 
 scale_factor_allmean = norm_info[c(1:12),11] / norm_info[c(1:12),7]
 
+#scale_factor_allmean = norm_info[c(1:12),12] / norm_info[c(1:12),8]
+#scale_factor_allmean = 6 - norm_info[c(1:12),7]
+
 scale_factor = norm_info[c(1:12),14] / norm_info[c(1:12),10]
 
 
@@ -57,14 +60,14 @@ sd_scale_am = norm_info[c(1:12),19] / norm_info[c(1:12),15]
 #data_atac_sig_sf_sd = t(apply(data_atac_sig_sf, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
 #data_atac_sig_sf_sd_am = t(apply(data_atac_sig_sf_am, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
 
-data_atac_sig_sf_sd1 = t(apply(data_atac_sig_sf1, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
-data_atac_sig_sf_sd_am1 = t(apply(data_atac_sig_sf_am1, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
-data_atac_sig_sf_sd5 = t(apply(data_atac_sig_sf5, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
-data_atac_sig_sf_sd_am5 = t(apply(data_atac_sig_sf_am5, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
-data_atac_sig_sf_sd10 = t(apply(data_atac_sig_sf10, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
-data_atac_sig_sf_sd_am10 = t(apply(data_atac_sig_sf_am10, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
-data_atac_sig_sf_sd110 = t(apply(data_atac_sig_sf110, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
-data_atac_sig_sf_sd_am110 = t(apply(data_atac_sig_sf_am110, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
+#data_atac_sig_sf1 = t(apply(data_atac_sig_sf1, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
+#data_atac_sig_sf_am1 = t(apply(data_atac_sig_sf_am1, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
+#data_atac_sig_sf5 = t(apply(data_atac_sig_sf5, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
+#data_atac_sig_sf_am5 = t(apply(data_atac_sig_sf_am5, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
+#data_atac_sig_sf10 = t(apply(data_atac_sig_sf10, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
+#data_atac_sig_sf_am10 = t(apply(data_atac_sig_sf_am10, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
+#data_atac_sig_sf110 = t(apply(data_atac_sig_sf110, 1, FUN=function(x) x*sd_scale)) #data_atac_sig_sf#
+#data_atac_sig_sf_am110 = t(apply(data_atac_sig_sf_am110, 1, FUN=function(x) x*sd_scale_am)) #data_atac_sig_sf_am#
 
 
 ###### input matrix
@@ -79,21 +82,43 @@ data_atac_sig_log2_tr = log2(data_atac_sig_tr+1)
 
 ### scale log2
 data_atac_sig_sf_am_log2_1 = log2((data_atac_sig_sf_am1+1)/1000*1000)
+#data_atac_sig_sf_log2_110_sd = apply(data_atac_sig_sf_am_log2_1, 2, sd)
+#data_atac_sig_sf_am_log2_1 = t(apply(data_atac_sig_sf_am_log2_1, 1, FUN=function(x) x / data_atac_sig_sf_log2_110_sd))
+
 ### sf_sd_norm log2
 data_atac_sig_sf_log2_1 = log2((data_atac_sig_sf1+1)/1000*1000)
+#data_atac_sig_sf_log2_110_sd = apply(data_atac_sig_sf_log2_1, 2, sd)
+#data_atac_sig_sf_log2_1 = t(apply(data_atac_sig_sf_log2_1, 1, FUN=function(x) x / data_atac_sig_sf_log2_110_sd))
+
 ### scale log2
 data_atac_sig_sf_am_log2_5 = log2((data_atac_sig_sf_am5+1)/5000*1000)
+#data_atac_sig_sf_log2_110_sd = apply(data_atac_sig_sf_am_log2_5, 2, sd)
+#data_atac_sig_sf_am_log2_5 = t(apply(data_atac_sig_sf_am_log2_5, 1, FUN=function(x) x / data_atac_sig_sf_log2_110_sd))
+
 ### sf_sd_norm log2
 data_atac_sig_sf_log2_5 = log2((data_atac_sig_sf5+1)/5000*1000)
+#data_atac_sig_sf_log2_110_sd = apply(data_atac_sig_sf_log2_5, 2, sd)
+#data_atac_sig_sf_log2_5 = t(apply(data_atac_sig_sf_log2_5, 1, FUN=function(x) x / data_atac_sig_sf_log2_110_sd))
+
 ### scale log2
 data_atac_sig_sf_am_log2_10 = log2((data_atac_sig_sf_am10+1)/10000*1000)
+#data_atac_sig_sf_log2_110_sd = apply(data_atac_sig_sf_am_log2_10, 2, sd)
+#data_atac_sig_sf_am_log2_10 = t(apply(data_atac_sig_sf_am_log2_10, 1, FUN=function(x) x / data_atac_sig_sf_log2_110_sd))
+
 ### sf_sd_norm log2
 data_atac_sig_sf_log2_10 = log2((data_atac_sig_sf10+1)/10000*1000)
-### scale log2
-data_atac_sig_sf_am_log2_110 = log2((data_atac_sig_sf_am110+1)/100000*1000)
-### sf_sd_norm log2
-data_atac_sig_sf_log2_110 = log2((data_atac_sig_sf110+1)/100000*1000)
+#data_atac_sig_sf_log2_110_sd = apply(data_atac_sig_sf_log2_10, 2, sd)
+#data_atac_sig_sf_log2_10 = t(apply(data_atac_sig_sf_log2_10, 1, FUN=function(x) x / data_atac_sig_sf_log2_110_sd))
 
+### scale log2
+data_atac_sig_sf_am_log2_110 = log2((data_atac_sig_sf_am110+1)/10000*1000)
+#data_atac_sig_sf_log2_110_sd = apply(data_atac_sig_sf_am_log2_110, 2, sd)
+#data_atac_sig_sf_am_log2_110 = t(apply(data_atac_sig_sf_am_log2_110, 1, FUN=function(x) x / data_atac_sig_sf_log2_110_sd))
+
+### sf_sd_norm log2
+data_atac_sig_sf_log2_110 = log2((data_atac_sig_sf110+1)/10000*1000)
+#data_atac_sig_sf_log2_110_sd = apply(data_atac_sig_sf_log2_110, 2, sd)
+#data_atac_sig_sf_log2_110 = t(apply(data_atac_sig_sf_log2_110, 1, FUN=function(x) x / data_atac_sig_sf_log2_110_sd))
 
 
 data_atac_sig_var = apply(data_atac_sig_log2, 1, var)
@@ -105,18 +130,34 @@ data_rna_sig_var = apply(data_rna_sig, 1, var)
 
 png('norm_compare/variance.png')
 par(mfrow=c(2,2))
-heatscatter((data_atac_sig_var), log(data_rna_sig_var), pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
-heatscatter((data_atac_sig_var_tr), log(data_rna_sig_var), pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
-heatscatter((data_atac_sig_sf_am_log2_10_var), log(data_rna_sig_var), pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
-heatscatter((data_atac_sig_sf_log2_10_var), log(data_rna_sig_var), pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
+rna_log=(data_rna_sig_var)
+rm_rna=as.logical( (!is.na(rna_log)) * (is.finite(rna_log)) )
+
+summary(rna_log[rm_rna])
+heatscatter((data_atac_sig_var), rna_log, pch = 20, xlim=c(0, 3), ylim=c(-10, 20))
+abline(lm(rna_log[rm_rna]~data_atac_sig_var[rm_rna]), col="red") # regression line (y~x) 
+lines(lowess(data_atac_sig_var[rm_rna],rna_log[rm_rna]), col="blue") # lowess line (x,y)
+
+heatscatter((data_atac_sig_var_tr), rna_log, pch = 20, xlim=c(0, 3), ylim=c(-10, 20))
+abline(lm(rna_log[rm_rna]~data_atac_sig_var_tr[rm_rna]), col="red") # regression line (y~x) 
+lines(lowess(data_atac_sig_var_tr[rm_rna],rna_log[rm_rna]), col="blue") # lowess line (x,y)
+
+heatscatter((data_atac_sig_sf_am_log2_10_var), rna_log, pch = 20, xlim=c(0, 3), ylim=c(-10, 20))
+abline(lm(rna_log[rm_rna]~data_atac_sig_sf_am_log2_10_var[rm_rna]), col="red") # regression line (y~x) 
+lines(lowess(data_atac_sig_sf_am_log2_10_var[rm_rna],rna_log[rm_rna]), col="blue") # lowess line (x,y)
+
+heatscatter((data_atac_sig_sf_log2_10_var), rna_log, pch = 20, xlim=c(0, 3), ylim=c(-10, 20))
+abline(lm(rna_log[rm_rna]~data_atac_sig_sf_log2_10_var[rm_rna]), col="red") # regression line (y~x) 
+lines(lowess(data_atac_sig_sf_log2_10_var[rm_rna],rna_log[rm_rna]), col="blue") # lowess line (x,y)
+
 dev.off()
 
 png('norm_compare/variance_high.png')
 par(mfrow=c(2,2))
-heatscatter((data_atac_sig_var)[log(data_rna_sig_var)>-5], log(data_rna_sig_var)[log(data_rna_sig_var)>-5], pch = 20, xlim=c(0, 3), ylim=c(-5, 5))
-heatscatter((data_atac_sig_var_tr)[log(data_rna_sig_var)>-5], log(data_rna_sig_var)[log(data_rna_sig_var)>-5], pch = 20, xlim=c(0, 3), ylim=c(-5, 5))
-heatscatter((data_atac_sig_sf_am_log2_10_var)[log(data_rna_sig_var)>-5], log(data_rna_sig_var)[log(data_rna_sig_var)>-5], pch = 20, xlim=c(0, 3), ylim=c(-5, 5))
-heatscatter((data_atac_sig_sf_log2_10_var)[log(data_rna_sig_var)>-5], log(data_rna_sig_var)[log(data_rna_sig_var)>-5], pch = 20, xlim=c(0, 3), ylim=c(-5, 5))
+heatscatter((data_atac_sig_var)[log(data_rna_sig_var)>-10], log(data_rna_sig_var)[log(data_rna_sig_var)>-10], pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
+heatscatter((data_atac_sig_var_tr)[log(data_rna_sig_var)>-10], log(data_rna_sig_var)[log(data_rna_sig_var)>-10], pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
+heatscatter((data_atac_sig_sf_am_log2_10_var)[log(data_rna_sig_var)>-10], log(data_rna_sig_var)[log(data_rna_sig_var)>-10], pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
+heatscatter((data_atac_sig_sf_log2_10_var)[log(data_rna_sig_var)>-10], log(data_rna_sig_var)[log(data_rna_sig_var)>-10], pch = 20, xlim=c(0, 3), ylim=c(-10, 5))
 dev.off()
 
 
@@ -162,6 +203,7 @@ data_atac_sf_sd_rna_sig_cor110 = apply(cbind(data_atac_sig_sf_log2_110, data_rna
 
 
 print('correlation summary: ')
+print(length(data_atac_rna_sig_cor))
 summary((data_atac_rna_sig_cor))
 summary((data_atac_rna_sig_cor_tr))
 
@@ -177,7 +219,8 @@ summary((data_atac_sf_sd_rna_sig_cor10))
 summary((data_atac_sf_sd_am_rna_sig_cor110))
 summary((data_atac_sf_sd_rna_sig_cor110))
 
-png('norm_compare/spearman_corr.png')
+
+png('norm_compare/spearman_corr.png', width = 8, height = 8, units = 'in', res = 300)
 par(mfrow=c(2,2))
 plot(density((data_atac_rna_sig_cor[!is.na(data_atac_rna_sig_cor)])), ylim=c(0,2.5), main='original atac signal TSS 10 kb')
 abline(v=0, lty=2)
