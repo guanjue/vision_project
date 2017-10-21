@@ -44,12 +44,13 @@ for (i in c(1:dim(ncis_table_list)[1])){
 
 	### variance change-point without polynomial regression norm
 	print('find variance change-point without polynomial regression norm')
-	ansvar=cpt.var(r, class=FALSE, method = changepoint_method)
+	ansvar=cpt.var(r, class=FALSE, method = changepoint_method, penalty = 'BIC', Q=5)
 
 	### variance change-point with polynomial regression norm
 	print('find variance change-point with polynomial regression norm')
 	if (max(r)!=0){
-		ansvar_norm=cpt.var(r-lo_fit_value, class=FALSE, method = changepoint_method)
+		ansvar_norm=cpt.var(r-lo_fit_value, class=FALSE, method = changepoint_method, penalty = 'BIC', Q=5)
+		print(ansvar_norm)
 		}	else{
 			ansvar_norm=c(0)
 		}
@@ -59,17 +60,23 @@ for (i in c(1:dim(ncis_table_list)[1])){
 	png(paste(output_folder, output_name, '.png', sep =''))
 	heatscatter(t, r, pch = 20, ylim=c(-3,3), xlim=c(1,10000), log='x', main=paste(toString(ansvar[1]), 'VS', toString(ansvar_norm[1]), sep=' ') )
 	lines(lo_fit_value, col = 'blue', lty=2)
-	abline(v = ansvar[1], col = 'gray', lty=2)
-	abline(v = ansvar_norm[1], col = 'red', lty=2)
+	abline(v = t[ansvar[1]], col = 'gray', lty=2)
+	abline(v = t[ansvar_norm[1]], col = 'red', lty=2)
 	dev.off()
 
 	### plot r vs t pattern with polynomial regression norm & and variance change point
 	png(paste(output_folder, output_name, '.pn.png', sep =''))
 	heatscatter(t, r-lo_fit_value, pch = 20, ylim=c(-3,3), xlim=c(1,10000), log='x', main=toString(ansvar_norm[1]))
-	abline(v = ansvar_norm[1], col = 'red', lty=2)
+	abline(v = t[ansvar_norm[1]], col = 'red', lty=2)
 	dev.off()
 
-	t_thresh[i] = ansvar_norm[1]
+
+	if (ansvar_norm[1] != 0){
+		t_thresh[i] = t[ansvar_norm[1]]
+	} else{
+		t_thresh[i] = 0
+	}
+	
 }
 
 ### write t_thresh table

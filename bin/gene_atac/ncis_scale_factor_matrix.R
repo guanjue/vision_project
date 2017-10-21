@@ -1,5 +1,4 @@
 library(LSD)
-library(changepoint)
 
 ### get parameters
 args = commandArgs(trailingOnly=TRUE)

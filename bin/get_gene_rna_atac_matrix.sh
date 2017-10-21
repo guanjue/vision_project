@@ -135,7 +135,6 @@ cd $analysis_folder
 	### get rsem id table
 	echo 3 > $rsem_matrix_folder'rsem_matrix_id.txt'
 	tail -n+2 $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.txt' | awk -F ';' -v OFS=';' '{print $1,$2}' | awk -F '\t' -v OFS='\t' '{print $4}' >> $rsem_matrix_folder'rsem_matrix_id.txt'
-
 	cat $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.txt' | awk -F ';' -v OFS='\t' '{print $1,$2,$3}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3,$4";"$5,$6,$7,  $8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19 }' > $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.notmatched.txt'
 
 	### sort TSS atac-signal matrix
@@ -151,6 +150,9 @@ cd $analysis_folder
 	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.notmatched.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup100kb.atac.celltype.matched.txt' -n 4 -o $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.matched.txt' -k F
 	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $gene_atac'gencode_pc_sort.atac.celltype.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup100kb.atac.celltype.matched.txt' -n 4 -o $gene_atac'gencode_pc_sort.atac.celltype.matched.txt' -k F
 
+	cat $rsem_matrix_folder'rsem_matrix.norm.log2_norm_matrix_plus1.celltype.txt' | awk -F ';' -v OFS='\t' '{print $1,$2,$3}' | awk -F '\t' -v OFS='\t' '{print $1,$2,$3,$4";"$5,$6,$7,  $8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19 }' > $rsem_matrix_folder'rsem_matrix.norm.log2_norm_matrix_plus1.celltype.notmatched.txt'
+
+	time python $script_folder'rna_matrix/vlookup_uniq.py' -t $rsem_matrix_folder'rsem_matrix.norm.log2_norm_matrix_plus1.celltype.notmatched.txt' -m 4 -s $gene_atac'gencode_pc_sort.TSSup100kb.atac.celltype.matched.txt' -n 4 -o $rsem_matrix_folder'rsem_matrix.norm.log2_norm_matrix_plus1.celltype.matched.txt' -k F
 
 ###### atac NCIS norm
 	### get ncis table
@@ -164,7 +166,10 @@ cd $analysis_folder
 	done < $input_folder'ncis_table_list.txt'
 
 	### get the NCIS T-R model normed matrix
+	time Rscript $script_folder'gene_atac/ncis_t_norm.R' $input_folder'ncis_table_t_norm.txt' $gene_atac'gencode_pc_sort.TSSexp1kb.atac.celltype.matched.txt' $gene_atac'gencode_pc_sort.TSSexp1kb.atac.celltype.matched.TRnormed.txt' $atac_ncis_table
+	time Rscript $script_folder'gene_atac/ncis_t_norm.R' $input_folder'ncis_table_t_norm.txt' $gene_atac'gencode_pc_sort.TSSexp5kb.atac.celltype.matched.txt' $gene_atac'gencode_pc_sort.TSSexp5kb.atac.celltype.matched.TRnormed.txt' $atac_ncis_table
 	time Rscript $script_folder'gene_atac/ncis_t_norm.R' $input_folder'ncis_table_t_norm.txt' $gene_atac'gencode_pc_sort.TSSexp10kb.atac.celltype.matched.txt' $gene_atac'gencode_pc_sort.TSSexp10kb.atac.celltype.matched.TRnormed.txt' $atac_ncis_table
+	time Rscript $script_folder'gene_atac/ncis_t_norm.R' $input_folder'ncis_table_t_norm.txt' $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.matched.txt' $gene_atac'gencode_pc_sort.TSSup1000kb.atac.celltype.matched.TRnormed.txt' $atac_ncis_table
 
 	### get the NCIS R VS T pattern variance change-point
 	time Rscript $script_folder'gene_atac/ncis_change_point.R' $input_folder'ncis_table_list.txt' $scale_factor_matrix'ncis_table_list.t_thresh.txt' $atac_ncis_table $atac_ncis_table_plot BinSeg
