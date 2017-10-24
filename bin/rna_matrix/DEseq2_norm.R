@@ -10,7 +10,9 @@ library(DESeq2)
 ### reads signal matrix
 print('reads data')
 data = read.table(sig_matrix_inputfile, header = F, sep = '\t')
+#data = read.table('rsem_matrix.txt', header = F, sep = '\t')
 data_sample_info = read.table(sample_info_list, header = F)
+#data_sample_info = read.table('/Volumes/MAC_Data/data/labs/hardison_lab/vision/gene_rnaseq_atac/input_folder/rsem_list_sample_col.txt', header = F)
 
 ### read column name & condition
 col_label = data_sample_info[,1]
@@ -47,6 +49,7 @@ write.table(cbind(data_info, rld_matrix), paste(output_name, 'rld_matrix.txt', s
 ### DEseq analysis
 print('DEseq scale factor')
 dds = DESeq(dds)
+
 ### get normalized signal matrix
 norm_matrix = counts(dds, normalized=T)
 ### write scale factor normalized results

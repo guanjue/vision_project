@@ -128,6 +128,13 @@ cd $analysis_folder
 	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSdown1000kb.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSdown1000kb.atac.celltype.txt'
 	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSexp110kb_sub_100kb.atac.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSexp110kb_sub_100kb.atac.celltype.txt'
 
+
+	### normalize based on scran method
+	time python $script_folder'rna_matrix/scran_normalization.py' -i $gene_atac'gencode_pc_sort.TSSexp10kb.atac.txt' -n 6 -s 'scran_scale_factor.txt' -o $gene_atac'gencode_pc_sort.TSSexp10kb.atac.scran.txt'
+	time python $script_folder'rna_matrix/merge_cell_type_data_rsem.py' -i $gene_atac'gencode_pc_sort.TSSexp10kb.atac.scran.txt' -m $input_folder'gene_atac_list_sample2celltype.txt' -n 7 -o $gene_atac'gencode_pc_sort.TSSexp10kb.atac.scran.celltype.txt'
+
+
+
 	### merge normed rsem sample matrix to cell type matrix
 	time python $script_folder'rna_matrix/vlookup_bed.py' -t $gene_atac'gencode_pc_sort.atac.celltype.txt' -s $rsem_matrix_folder'rsem_matrix.norm.rld_matrix.celltype.txt' -o $gene_atac'gencode_pc_sort.atac.celltype.matched.txt' -k F
 
