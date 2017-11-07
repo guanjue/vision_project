@@ -25,7 +25,7 @@ for (i in c(1:dim(ncis_table_list)[1])){
 
 	### read r vs t table of r vs t: r=sum(x1)/sum(x2); t=x1+x2
 	data = read.table(input_file,header = F)
-	data_m = data#[data[,1]>10,]
+	data_m = data[data[,1]>10,]
 
 	### log2 transform r
 	t_od = (data_m[,1])
@@ -58,7 +58,7 @@ for (i in c(1:dim(ncis_table_list)[1])){
 
 	### plot r vs t pattern without polynomial regression norm & and variance change point
 	png(paste(output_folder, output_name, '.png', sep =''))
-	heatscatter(t, r, pch = 20, ylim=c(-0.5,0.5), xlim=c(1,10000), log='x', main=paste(toString(ansvar[1]), 'VS', toString(ansvar_norm[1]), sep=' ') )
+	heatscatter(t, r, pch = 20, ylim=c(-3,3), xlim=c(1,10000), log='x', main=paste(toString(ansvar[1]), 'VS', toString(ansvar_norm[1]), sep=' ') )
 	lines(t, lo_fit_value, col = 'blue', lty=2)
 	abline(v = t[ansvar[1]], col = 'gray', lty=2)
 	abline(v = t[ansvar_norm[1]], col = 'red', lty=2)
@@ -66,7 +66,7 @@ for (i in c(1:dim(ncis_table_list)[1])){
 
 	### plot r vs t pattern with polynomial regression norm & and variance change point
 	png(paste(output_folder, output_name, '.pn.png', sep =''))
-	heatscatter(t, r-lo_fit_value, pch = 20, ylim=c(-1,1), xlim=c(1,10000), log='x', main=toString(ansvar_norm[1]))
+	heatscatter(t, r-lo_fit_value, pch = 20, ylim=c(-3,3), xlim=c(1,10000), log='x', main=toString(ansvar_norm[1]))
 	abline(v = t[ansvar_norm[1]], col = 'red', lty=2)
 	dev.off()
 

@@ -1,7 +1,4 @@
-library(scran)
-library(LSD)
-library(org.Mm.eg.db)
-library(DESeq2)
+library(edgeR)
 
 data = read.table('/Volumes/MAC_Data/data/labs/hardison_lab/vision/gene_rnaseq_atac/rsem_matrix_folder/rsem_matrix.txt', header = F, sep = '\t')
 data_sample_info = read.table('/Volumes/MAC_Data/data/labs/hardison_lab/vision/gene_rnaseq_atac/input_folder/rsem_list_sample_col.txt', header = F)
@@ -21,20 +18,18 @@ rownames(data_sig) = data[,4]
 
 countdata = as.matrix(round(data_sig*100, 0))
 
-### scran scale factor
-sf = computeSumFactors(countdata, size=10)
-write.table(t(sf), 'scran_scale_factor.txt', quote=F, sep='\t', row.names = FALSE, col.names = FALSE)
 
-### DESeq2 size factor
-coldata = data.frame(row.names=colnames(countdata), condition)
-### reads signal for DEseq2
-dds = DESeqDataSetFromMatrix(countData=countdata, colData=coldata, design= ~condition)
-print('DEseq scale factor')
-dds = DESeq(dds)
-sf_deseq = dds$sizeFactor
+group = factor(c(1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,14,15,16))
 
-png('compare_deseq_scran.png')
-plot(sf, sf_deseq, log="xy", ylab="DESeq2 size factor", xlab="Scran scale factor", xlim=c(0,2.3), ylim=c(0,2.3))
-abline(0,1, col='red')
-dev.off()
+y = DGEList(counts=countdata,group=group)
+
+y_cpm = cpm(y)*1000000
+
+y = calcNormFactors(y, method='TMM')
+
+y_norm_cpm = cpm(y)*1000000
+
+
+write.table(y$samples$norm.factors, 'edgeR_scale_factor.txt', quote=F, sep='\t', row.names = FALSE, col.names = FALSE)
+
 

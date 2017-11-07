@@ -38,10 +38,10 @@ def scran_normalization(data_matrix, signal_col, scale_factor, outputname):
 	print('data_matrix_sig.shape:')
 	print(data_matrix_sig.shape)
 	######
-	data_sf = read2d_array(scale_factor, float, '\t')
+	data_sf = np.transpose(read2d_array(scale_factor, float, '\t'))
 
 	###### normalize based on scran sf
-	data_scran_matrix = data_matrix_sig / data_sf[0]
+	data_scran_matrix = data_matrix_sig * data_sf[0]
 
 	### add back data info matrix
 	data_scran_matrix = np.concatenate((data_matrix_info, data_scran_matrix),  axis = 1)
