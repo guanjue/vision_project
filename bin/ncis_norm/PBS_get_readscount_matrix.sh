@@ -9,7 +9,7 @@ module load bedtools
 module load samtools
 
 work_folder='/storage/home/gzx103/scratch/vision_clustering/histones/h3k4me3/'
-input_bam_folder='/storage/home/gzx103/group/projects/vision/histone/h3k4me3/'
+input_bam_folder='/storage/home/gzx103/group/projects/vision/histone/h3k4me3/bam/unsorted_bam/'
 tmp_output_folder='/storage/home/gzx103/scratch/vision_clustering/histones/h3k4me3/tmp_files/'
 matrix_folder='/storage/home/gzx103/scratch/vision_clustering/histones/h3k4me3/matrix/'
 
@@ -19,9 +19,9 @@ rm $matrix_folder'ongoing.txt'
 rm $matrix_folder'total_reads_q30.txt'
 
 tail -n+2 $matrix_folder'200_noblack.windows' | sort -k1,1 -k2,2n > $matrix_folder'target.sorted.bed'
-cp $matrix_folder'target.sorted.bed' $matrix_folder'atac_reads_count_matrix_5end.txt'
+cp $matrix_folder'target.sorted.bed' $matrix_folder'h3k4me3_reads_count_matrix_5end.txt'
 
-for bam_file in $(cat $matrix_folderh3k4me3_bamfile_list.txt)
+for bam_file in $(cat $matrix_folder'h3k4me3_bamfile_list.txt')
 do
 	echo $bam_file
 	echo $bam_file >> $tmp_output_folder'ongoing.txt'
@@ -43,8 +43,8 @@ do
 	### bam to bed file
 	bedtools bamtobed -i $tmp_output_folder$bam_file'.sorted.q30.bam' > $tmp_output_folder$bam_file'.sorted.q30.bam.bed'
 
-	### get 5' end and shift (+strand: +4; -strand: -5
-	cat $tmp_output_folder$bam_file'.sorted.q30.bam.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+") print $1, $2+4, $2+4+1, $4, $5, $6; else print $1, $3-5-1, $3-5, $4, $5, $6}' > $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.bed'
+	### get 5' end and shift (+strand: +0; -strand: -0)
+	cat $tmp_output_folder$bam_file'.sorted.q30.bam.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+") print $1, $2+0, $2+0+1, $4, $5, $6; else print $1, $3-0-1, $3-0, $4, $5, $6}' > $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.bed'
 
 	### intersected reads number
 	bedtools intersect -a $tmp_output_folder'target.sorted.bed' -b $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.bed' -wa -c > $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.bed'
@@ -53,10 +53,10 @@ do
 	cat $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.bed' | awk -F '\t' -v OFS='\t' '{print $6}' > $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.txt'
 	
 	### cbind to reads count matrix
-	paste $matrix_folder'atac_reads_count_matrix_5end.txt' $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.txt' > $matrix_folder'atac_reads_count_matrix_5end_tmp.txt'
+	paste $matrix_folder'h3k4me3_reads_count_matrix_5end.txt' $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.txt' > $matrix_folder'h3k4me3_reads_count_matrix_5end_tmp.txt'
 	
 	### change names
-	mv $matrix_folder'atac_reads_count_matrix_5end_tmp.txt' $matrix_folder'atac_reads_count_matrix_5end.txt'
+	mv $matrix_folder'h3k4me3_reads_count_matrix_5end_tmp.txt' $matrix_folder'h3k4me3_reads_count_matrix_5end.txt'
 
 	#rm tmp.bam 
 	#rm tmp_bam.bam
