@@ -26,7 +26,7 @@ do
 	echo $bam_file
 	echo $bam_file >> $tmp_output_folder'ongoing.txt'
 	### sort bam
-	samtools sort $input_bam_folder$bam_file $tmp_output_folder$bam_file'.sorted.bam'
+	samtools sort $input_bam_folder$bam_file $tmp_output_folder$bam_file'.sorted'
 
 	### index bam file
 	samtools index $tmp_output_folder$bam_file'.sorted.bam'
@@ -47,10 +47,10 @@ do
 	cat $tmp_output_folder$bam_file'.sorted.q30.bam.bed' | awk -F '\t' -v OFS='\t' '{if ($6=="+") print $1, $2+0, $2+0+1, $4, $5, $6; else print $1, $3-0-1, $3-0, $4, $5, $6}' > $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.bed'
 
 	### intersected reads number
-	bedtools intersect -a $tmp_output_folder'target.sorted.bed' -b $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.bed' -wa -c > $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.bed'
+	bedtools intersect -a $matrix_folder'target.sorted.bed' -b $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.bed' -wa -c > $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.bed'
 	
 	### get the signal column
-	cat $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.bed' | awk -F '\t' -v OFS='\t' '{print $6}' > $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.txt'
+	cat $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.bed' | awk -F '\t' -v OFS='\t' '{print $4}' > $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.txt'
 	
 	### cbind to reads count matrix
 	paste $matrix_folder'h3k4me3_reads_count_matrix_5end.txt' $tmp_output_folder$bam_file'.sorted.q30.5end.shifted.bam.readscount.txt' > $matrix_folder'h3k4me3_reads_count_matrix_5end_tmp.txt'
@@ -68,5 +68,6 @@ do
 	#rm test.5end.shifted.bed
 	#rm tmp_readcount.bed
 done
+
 
 
